@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/chy001130/foodInfoApp#readme",
   "dependencies": {
+    "bulma": "^0.9.1",
     "jquery": "^3.5.1"
   }
 }
