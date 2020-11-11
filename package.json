@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/chy001130/foodInfoApp/issues"
   },
-  "homepage": "https://github.com/chy001130/foodInfoApp#readme"
+  "homepage": "https://github.com/chy001130/foodInfoApp#readme",
+  "dependencies": {
+    "jquery": "^3.5.1"
+  }
 }
