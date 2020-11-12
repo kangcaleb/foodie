@@ -17,7 +17,11 @@
   },
   "homepage": "https://github.com/chy001130/foodInfoApp#readme",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "bulma": "^0.9.1",
+    "data-store": "^4.0.3",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "jquery": "^3.5.1"
   }
 }
