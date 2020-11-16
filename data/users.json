@@ -23,5 +23,67 @@
     "id": 4,
     "email": "davidtruong@gmail.com",
     "password": "davidsPassword"
+  },
+  "5": {
+    "id": 5
+  },
+  "6": {
+    "id": 6
+  },
+  "7": {
+    "id": 7
+  },
+  "8": {
+    "id": 8
+  },
+  "9": {
+    "id": 9,
+    "email": "chy001130@gmail.com",
+    "password": "2ne1blackjack"
+  },
+  "10": {
+    "id": 10,
+    "email": "yooooooSignUpwork@yes.com",
+    "password": "hellohello"
+  },
+  "11": {
+    "id": 11,
+    "email": "asdjaslkdjlk@fasldkjasl.com",
+    "password": "sdjsakldjasldkas"
+  },
+  "12": {
+    "id": 12,
+    "email": "",
+    "password": ""
+  },
+  "13": {
+    "id": 13,
+    "email": "",
+    "password": ""
+  },
+  "14": {
+    "id": 14,
+    "email": "",
+    "password": ""
+  },
+  "15": {
+    "id": 15,
+    "email": "",
+    "password": ""
+  },
+  "16": {
+    "id": 16,
+    "email": "",
+    "password": ""
+  },
+  "17": {
+    "id": 17,
+    "email": "chunhung@live.unc.edu",
+    "password": "2ne1blackjack"
+  },
+  "18": {
+    "id": 18,
+    "email": "testing@123.com",
+    "password": "testingpassword"
   }
 }
