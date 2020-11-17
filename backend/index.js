@@ -19,6 +19,12 @@ app.use(expressSession({
 const User = require('./user.js')
 const usersData = require('data-store')({ path: process.cwd() + '/data/users.json' });
 
+/*
+* Here are endpoints regarding login and user information.
+* Right now they are all relative to the base url: http//localhost:3000
+*
+* */
+
 app.get('/home', (req, res) => {
     res.json('This is a test to see that my express backend is up and running. This is the endpoint for the homepage')
 })
@@ -32,7 +38,10 @@ app.get('/users', (req, res) => {
     res.json(users)
 })
 
-/*This endpoint requires the user and password information to be in the request body*/
+/*This endpoint requires the user and password information to be in the request body
+* This information needs to be passed in as key values pairs with the keys being
+* email and password respectively. content type for request must be form-url-encoded
+* */
 app.post('/login', (req,res) => {
     let email = req.body.email;
     let password = req.body.password;
@@ -52,11 +61,17 @@ app.post('/login', (req,res) => {
     res.status(403).send("Unauthorized");
 })
 
+/*
+* log out the user
+* */
 app.get('/logout', (req, res) => {
     delete req.session.user
     res.json(true)
 })
 
+/*
+* creates a new user
+* */
 app.post('/user', (req, res) => {
 
     const email = req.body.email
@@ -72,6 +87,9 @@ app.post('/user', (req, res) => {
     res.json(user)
 })
 
+/*
+* gets the user info given a user id passed in as a parameter
+* */
 app.get('/user/:id', (req, res) => {
     let user = User.getUser(req.params.id)
 
