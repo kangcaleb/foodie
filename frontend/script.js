@@ -1,8 +1,8 @@
 $(function () {
     renderLogo();
     renderLoginForm();
-    //loginOnClick();
-    //homePageContent()
+    loginOnClick();
+    signUpOnClick();
 })
 
 const $root = $('#root');
@@ -12,20 +12,7 @@ const renderLogo = function () {
                         <img src="logo.png/"
                     </figure>`)
 }
-
-
-const homePageContent = function(){
-    $root.append(`<section class="hero is-medium is-bold">
-<div class="hero-body">
-<div class="container">
-<h1 class="title has-text-white has-text-left">
-Foodies Welcome
-</h1>
-</div>
-</div>
-</section>`)
-}
-const renderLoginForm = function () {
+const renderLoginForm = function (){
     //const $root = $('#root');
 
     $root.append(`<div class="hero">
@@ -54,33 +41,86 @@ const renderLoginForm = function () {
                                                   <i class="fas fa-lock"></i>
                                                 </span>
                                               </p>
-                                            </div>
-                                        <div class="field">
-                                                <a href="#">Sign up</a>                                                             
-                                        </div>
+                                            </div>  
+                                            <div class="field">
+                                                <div class="control">
+                                                    <p id="message"></p>
+                                                </div>
+                                            </div>                                    
                                         <div class="field">
                                                 <a href="#">Forgot Password?</a>                                                             
                                         </div>                                                                      
                                         <div class="field">
                                           <p class="control">
-                                            <button class="button is-rounded is-success loginButton">
+                                            <button type="button" class="button is-rounded is-success loginButton">
                                               Login
                                             </button>
+                                            <button type="button" class="button is-rounded is-danger signUpButton">
+                                              Sign Up
+                                            </button>
                                           </p>
-                                        </div>
-                                    
+                                        </div>                                                                     
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>`)
-
-
 }
+const renderSignUpModal = function() {
 
-const renderSignUpModal = function(){
+    let modal = document.createElement('div');
+    modal.setAttribute('class','modal is-active');
 
+    modal.innerHTML = `
+        <div class="modal-background"></div>
+              <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Please fill in your information to create an account!</p>
+                </header>
+            <section class="modal-card-body">
+                <form class="box">
+                   
+                    <div class="field">
+                    <label class="label">Email</label>
+                       <p class="control has-icons-left has-icons-right">                                        
+                          <input class="input" id="newUserEmail"  type="email" placeholder="Email">
+                            <span class="icon is-small is-left">
+                               <i class="fas fa-at"></i>    
+                            </span>
+                            <span class="icon is-small is-right">
+                                <i class="fas fa-check"></i>
+                            </span>
+                       </p>
+                     </div>
+                     <div class="field">
+                       <label class="label">Password</label>
+                         <p class="control has-icons-left">
+                           <input class="input" id="newUserPassword" type="input" placeholder="Password">
+                             <span class="icon is-small is-left">
+                               <i class="fas fa-lock"></i>
+                             </span>
+                         </p>
+                       </div> 
+                                                                   
+                </form>
+               </section>
+        <footer class="modal-card-foot">
+             <button class="button is-success" id="createButtonID" >Create account!</button>
+                <button class="button" id="cancelButton" onclick="$('.modal').removeClass('is-active');">Cancel</button>
+`
+
+    let newUserEmail = ''
+    let newUserPassword = ''
+
+    $root.on('click','#createButtonID',function(){
+        $('.modal').removeClass('is-active');
+        newUserEmail = $("input#newUserEmail").val()
+        newUserPassword = $("input#newUserPassword").val()
+        createUserLogin(newUserEmail,newUserPassword);
+    })
+
+    $root.append(modal)
 }
 
 const loginOnClick = function () {
@@ -91,5 +131,55 @@ const loginOnClick = function () {
     $root.on('click', '.loginButton', function () {
         userEmail = $("input#userEmail").val()
         userPassword = $("input#userPassword").val()
+        verifyLogin(userEmail,userPassword)
+    })
+}
+const signUpOnClick = function() {
+    $root.on('click','.signUpButton',function () {
+        //alert('hello')
+        renderSignUpModal()
+    })
+}
+async function getUserInfo(){
+    let response = await $.ajax("http://localhost:3000/users",{
+        type: "GET",
+        dataType: "json",
+    })
+    $root.append(JSON.stringify(response))
+}
+async function getUserID(){
+    let response = await $.ajax("http://localhost:3000/userids",{
+        type: "GET",
+        dataType: "json",
+    })
+    $root.append(JSON.stringify(response))
+}
+
+
+//User sign up request
+async function createUserLogin(email,password){
+    let response = await $.ajax("http://localhost:3000/user", {
+        type: "POST",
+        dataType: "JSON",
+        data: {
+            "email": email,
+            "password": password,
+        }
+    })
+}
+//Login credential verification
+async function verifyLogin(email,password){
+    const $message = $('#message');
+    await $.ajax("http://localhost:3000/login", {
+        type: "POST",
+        dataType: "JSON",
+        data: {
+            "email": email,
+            "password": password,
+        }
+    }).then(() => {
+        $message.html('<span class="has-text-success">Success! You are now logged in.</span>');
+    }).catch(() => {
+        $message.html('<span class="has-text-danger">Something went wrong and you were not logged in. Check your email and password and your internet connection.</span>');
     })
 }
