@@ -1,8 +1,8 @@
 $(function () {
-    // renderLogo();
-    // renderLoginForm();
-    // loginOnClick();
-    // signUpOnClick();
+    renderLogo();
+    renderLoginForm();
+    loginOnClick();
+    signUpOnClick();
     const div = createSearch()
     $root.append(div)
     configSearch()
