@@ -237,6 +237,7 @@ const requestRecipeSearch = async (type, search) => {
 /*takes in api response from search query and appends to root*/
 const renderSearchResults = (response) => {
     // right now it just makes a p element with the json content and appends to root
+    // this is from chun
     const results = `<div class="container">
                         <p>${JSON.stringify(response, null, 2)}</p>
                     </div>`
