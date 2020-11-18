@@ -155,7 +155,6 @@ async function getUserID(){
     $root.append(JSON.stringify(response))
 }
 
-
 //User sign up request
 async function createUserLogin(email,password){
     let response = await $.ajax("http://localhost:3000/user", {
@@ -182,4 +181,65 @@ async function verifyLogin(email,password){
     }).catch(() => {
         $message.html('<span class="has-text-danger">Something went wrong and you were not logged in. Check your email and password and your internet connection.</span>');
     })
+}
+
+/*creates and returns an html element (as a string) with a search bar and submit button*/
+const createSearch = () => {
+    const div = `<div class="field container">
+                      <div class="control">
+                            <input id='recipe-search' autocomplete="on" class="input" type="text" placeholder="Search Recipe Here">
+                            <button id='recipe-submit'class="button is-success" type="click">Submit</button>
+                    </div>
+                </div>`
+
+    return div
+}
+
+/*Adds callbacks to search submit buttom*/
+const configSearch = () => {
+    const submit = $('#recipe-submit')
+    const searchBar = $('input#recipe-search')
+
+    submit.on('click', () => {
+        const searchText = searchBar.val()
+
+        const searchResult = requestRecipeSearch('q', searchText)
+
+        searchResult.then((res) => {
+            renderSearchResults(res)
+        }).catch((error) => {
+            alert(error)
+        })
+    })
+}
+
+/*use the recipe api to make a fetch, results the result*/
+const requestRecipeSearch = async (type, search) => {
+    let baseUrl = 'https://api.edamam.com/search?'
+    baseUrl = baseUrl + (type + '=' + search)
+
+    const cors = type == 'q' ? 'cors' : 'no-cors'
+
+    baseUrl = baseUrl + '&app_key=1235bcdb8e7bab0323df3ae7ad7587db'
+    baseUrl = baseUrl + '&app_id=e8ceb929'
+
+    const result = await fetch(baseUrl, {
+        method: "GET",
+        mode: cors,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+
+    return result.json()
+}
+
+/*takes in api response from search query and appends to root*/
+const renderSearchResults = (response) => {
+    // right now it just makes a p element with the json content and appends to root
+    const results = `<div class="container">
+                        <p>${JSON.stringify(response, null, 2)}</p>
+                    </div>`
+
+    $root.append(results)
 }
