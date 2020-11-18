@@ -3,9 +3,6 @@ $(function () {
     renderLoginForm();
     loginOnClick();
     signUpOnClick();
-    const div = createSearch()
-    $root.append(div)
-    configSearch()
 })
 
 const $root = $('#root');
