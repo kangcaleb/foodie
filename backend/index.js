@@ -135,6 +135,33 @@ app.post('/user/:id/recipe', (req, res) => {
     }
 })
 
+app.delete('/user/:id/recipe', (req, res) => {
+    const id = req.params.id
+    const recipe = req.query.recipe
+    console.log(recipe)
+
+    if (userData.has(id)) {
+        const user = User.getUserData(id)
+
+        // TODO Defensive Programing for valid recipe, if time
+        console.log(user.recipes)
+
+        const updated = user.recipes.filter(rec => rec != recipe)
+
+        if (updated.length != user.recipes.length) {
+
+            user.recipes = updated
+            userData.set(user.id.toString(), user)
+
+            res.json(user)
+        } else {
+            res.send(404).send('bad recipe')
+        }
+    } else {
+        res.send(404).send('no user')
+    }
+})
+
 const port = 3000
 app.listen(port, () => {
     console.log('app listening on port: ' + port)
