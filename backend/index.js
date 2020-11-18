@@ -17,7 +17,8 @@ app.use(expressSession({
 
 
 const User = require('./user.js')
-const usersData = require('data-store')({ path: process.cwd() + '/data/users.json' });
+const userData = require('data-store')({ path: process.cwd() + '/data/user-data.json' })
+
 
 /*
 * Here are endpoints regarding login and user information.
@@ -101,9 +102,44 @@ app.get('/user/:id', (req, res) => {
     res.send(user)
 })
 
+app.get('/users-data', (req, res) => {
+    res.json(User.getAllUserData())
+})
+
+app.get('/user/:id/data', (req, res) => {
+    const id = req.params.id
+
+    if (userData.has(id)) {
+        const data = userData.get(req.params.id, ()=>{})
+        res.json(data)
+    } else {
+        res.send(404).send('bad user data request')
+    }
+})
+
+app.post('/user/:id/recipe', (req, res) => {
+
+    const id = req.params.id
+    const recipe = req.query.recipe
+
+    if (userData.has(id)) {
+        const user = User.getUserData(id)
+
+        // TODO Defensive Programing for valid recipe, if time
+        user.recipes.push(recipe)
+        userData.set(user.id.toString(), user)
+
+        res.json(user)
+    } else {
+        res.send(404).send('no user')
+    }
+})
+
 const port = 3000
 app.listen(port, () => {
     console.log('app listening on port: ' + port)
 })
+
+
 
 
