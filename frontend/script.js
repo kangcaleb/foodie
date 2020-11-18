@@ -1,8 +1,13 @@
 $(function () {
-    renderLogo();
+/*    renderLogo();
     renderLoginForm();
     loginOnClick();
-    signUpOnClick();
+    signUpOnClick();*/
+
+
+    $root.append(createSearch())
+    configSearch();
+
 })
 
 const $root = $('#root');
@@ -222,21 +227,24 @@ const requestRecipeSearch = async (type, search) => {
 
     baseUrl = baseUrl + '&app_key=1235bcdb8e7bab0323df3ae7ad7587db'
     baseUrl = baseUrl + '&app_id=e8ceb929'
+    //testing purposes
 
     const result = await fetch(baseUrl, {
         method: "GET",
         mode: cors,
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+
         }
     })
 
-    return result.json()
+    return result.json();
 }
 
 /*takes in api response from search query and appends to root*/
 const renderSearchResults = (response) => {
     // right now it just makes a p element with the json content and appends to root
+    // this is from chun
     const results = `<div class="container">
                         <p>${JSON.stringify(response, null, 2)}</p>
                     </div>`
