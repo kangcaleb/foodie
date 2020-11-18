@@ -9,7 +9,7 @@ const $root = $('#root');
 
 const renderLogo = function () {
     $root.append(`<figure class="image container is-128x128">
-                        <img src="logo.png/"
+                        <img src="logo.png">
                     </figure>`)
 }
 const renderLoginForm = function (){
