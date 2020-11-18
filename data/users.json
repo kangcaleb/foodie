@@ -85,5 +85,10 @@
     "id": 18,
     "email": "testing@123.com",
     "password": "testingpassword"
+  },
+  "19": {
+    "id": 19,
+    "email": "123@123.com",
+    "password": "123456"
   }
 }
