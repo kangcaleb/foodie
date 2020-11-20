@@ -1,4 +1,5 @@
-const userData = require('data-store')({ path: process.cwd() + '/data/users.json' })
+const accountData = require('data-store')({ path: process.cwd() + '/data/accounts.json' })
+const userData = require('data-store')({ path: process.cwd() + '/data/user-data.json' })
 
 let User = class {
     constructor(id, email, password) {
@@ -7,7 +8,7 @@ let User = class {
 }
 
 User.getAllUserIds = () => {
-    return Object.keys(userData.data).map(id => parseInt(id))
+    return Object.keys(accountData.data).map(id => parseInt(id))
 }
 
 User.createUser = (name, password) => {
@@ -24,17 +25,25 @@ User.createUser = (name, password) => {
     const id = max_id + 1
     let user = new User(id, name, password)
 
-    userData.set(id.toString(), user)
+    accountData.set(id.toString(), user)
     return user
 }
 
 User.getUser = (id) => {
-    const user = userData.get(id)
+    const user = accountData.get(id)
     return user
 }
 
 User.getAllUsers = () => {
+    return Object.values(accountData.data)
+}
+
+User.getAllUserData = () => {
     return Object.values(userData.data)
+}
+
+User.getUserData = (id) => {
+    return userData.get(id)
 }
 
 module.exports = User
