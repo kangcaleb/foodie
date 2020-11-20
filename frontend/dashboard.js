@@ -1,13 +1,14 @@
 $(function () {
     $root.append(createNavbar())
-    configNav()
-    $root.append(`<section class="section"> <div class="container"><h3 class="title -1">Search for a Recipe</h3></div></section>`)
-    $root.append(createSearch())
+    $root.append(`<div id="root-content" class="container"></div>`)
+    $('div#root-content').append(`<section class="section"><h3 class="title -1">Search for a Recipe</h3></section>`)
+    $('div#root-content').append(createSearch())
+
     configSearch()
+    configNav()
 })
 
 const $root = $('#root');
-
 
 const createNavbar = () => {
     const nav = `<nav class="navbar" role="navigation" aria-label="main navigation">
@@ -127,7 +128,16 @@ const configNav = () => {
 
     const myRecipes = $('a#my-recipes')
     myRecipes.on('click', () => {
-        // TODO go to my recipes page
-        alert('my recipes')
+        // TODO go to my recipes pages
+        const rootContent = $('div#root-content')
+        rootContent.empty()
+
+        const list = createRecipeList()
+
+        list.then((value) => {
+            rootContent.append(value)
+        }).catch((error) => {
+            alert(error)
+        })
     })
 }
