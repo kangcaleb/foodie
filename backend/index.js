@@ -17,7 +17,8 @@ app.use(expressSession({
 
 
 const User = require('./user.js')
-const usersData = require('data-store')({ path: process.cwd() + '/data/users.json' });
+const userData = require('data-store')({ path: process.cwd() + '/data/user-data.json' })
+
 
 /*
 * Here are endpoints regarding login and user information.
@@ -26,15 +27,18 @@ const usersData = require('data-store')({ path: process.cwd() + '/data/users.jso
 * */
 
 app.get('/home', (req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     res.json('This is a test to see that my express backend is up and running. This is the endpoint for the homepage')
 })
 
 app.get('/userids', (req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*")
     res.json(User.getAllUserIds())
 })
 
 app.get('/users', (req, res) => {
     let users = User.getAllUsers()
+    res.setHeader("Access-Control-Allow-Origin", "*")
     res.json(users)
 })
 
@@ -55,6 +59,7 @@ app.post('/login', (req,res) => {
     if (user[0].password == password) {
         console.log("User " + user[0].email + " credentials valid");
         req.session.user = user;
+        res.setHeader("Access-Control-Allow-Origin", "*")
         res.json(true);
         return;
     }
@@ -66,6 +71,7 @@ app.post('/login', (req,res) => {
 * */
 app.get('/logout', (req, res) => {
     delete req.session.user
+    res.setHeader("Access-Control-Allow-Origin", "*")
     res.json(true)
 })
 
@@ -84,6 +90,7 @@ app.post('/user', (req, res) => {
         return
     }
 
+    res.setHeader("Access-Control-Allow-Origin", "*")
     res.json(user)
 })
 
@@ -98,12 +105,78 @@ app.get('/user/:id', (req, res) => {
         return
     }
 
+    res.setHeader("Access-Control-Allow-Origin", "*")
     res.send(user)
+})
+
+app.get('/users-data', (req, res) => {
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    res.json(User.getAllUserData())
+})
+
+app.get('/user/:id/data', (req, res) => {
+    console.log('hit user data endpoint')
+    const id = req.params.id
+
+    if (userData.has(id)) {
+        const data = userData.get(req.params.id, ()=>{})
+        res.setHeader("Access-Control-Allow-Origin", "*")
+        res.json(data)
+    } else {
+        res.send(404).send('bad user data request')
+    }
+})
+
+app.post('/user/:id/recipe', (req, res) => {
+
+    const id = req.params.id
+    const recipe = req.query.recipe
+
+    if (userData.has(id)) {
+        const user = User.getUserData(id)
+
+        // TODO Defensive Programing for valid recipe, if time
+        user.recipes.push(recipe)
+        userData.set(user.id.toString(), user)
+        res.setHeader("Access-Control-Allow-Origin", "*")
+        res.json(user)
+    } else {
+        res.send(404).send('no user')
+    }
+})
+
+app.delete('/user/:id/recipe', (req, res) => {
+    const id = req.params.id
+    const recipe = req.query.recipe
+    console.log(recipe)
+
+    if (userData.has(id)) {
+        const user = User.getUserData(id)
+
+        // TODO Defensive Programing for valid recipe, if time
+        console.log(user.recipes)
+
+        const updated = user.recipes.filter(rec => rec != recipe)
+
+        if (updated.length != user.recipes.length) {
+            user.recipes = updated
+            userData.set(user.id.toString(), user)
+
+            res.setHeader("Access-Control-Allow-Origin", "*")
+            res.json(user)
+        } else {
+            res.send(404).send('bad recipe')
+        }
+    } else {
+        res.send(404).send('no user')
+    }
 })
 
 const port = 3000
 app.listen(port, () => {
     console.log('app listening on port: ' + port)
 })
+
+
 
 
