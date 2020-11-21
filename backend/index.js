@@ -58,7 +58,7 @@ app.post('/login', (req,res) => {
     }
     if (user[0].password == password) {
         console.log("User " + user[0].email + " credentials valid");
-        req.session.user = user;
+        req.session.user = user[0];
         res.setHeader("Access-Control-Allow-Origin", "*")
         res.json(true);
         return;
@@ -73,6 +73,20 @@ app.get('/logout', (req, res) => {
     delete req.session.user
     res.setHeader("Access-Control-Allow-Origin", "*")
     res.json(true)
+})
+
+app.get('/current-user', (req, res) => {
+    const user = req.session.user
+    console.log('current user endpoint hit')
+    console.log(req)
+
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    if (user) {
+        res.json(user)
+    } else {
+        res.send(400).send('error')
+    }
+
 })
 
 /*
