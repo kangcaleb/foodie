@@ -1,8 +1,8 @@
 $(function () {
-/*    renderLogo();
+    renderLogo();
     renderLoginForm();
     loginOnClick();
-    signUpOnClick();*/
+    signUpOnClick();
 
 
     $root.append(createSearch())
