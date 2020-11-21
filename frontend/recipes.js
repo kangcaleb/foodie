@@ -5,12 +5,12 @@ const createRecipeList = async () => {
     console.log(result)
     const recipes = result.recipes
 
-    console.log(recipes)
-
-    recipes.forEach((recipe) => {
-        const recipeCard = createRecipeCard(recipe)
+    for (let i=0; i<recipes.length; i++) {
+        const recipeUri = recipes[i]
+        const recipe = await requestRecipeSearch('r', recipeUri)
+        const recipeCard = createRecipeCard(recipe[0])
         list.append(recipeCard)
-    })
+    }
 
     return list
 }
@@ -19,8 +19,8 @@ const createRecipeList = async () => {
 const createRecipeCard = (recipe) => {
     const recipeCard = `<div class="card">
                         <div class="card-image">
-                            <figure class="image is-4by3">
-                                <img src="recipe.image" alt="Placeholder image">
+                            <figure class="image is-128x128">
+                                <img src="${recipe.image}" alt="Placeholder image">
                             </figure>
                         </div>
                           <div class="card-content">
@@ -36,13 +36,33 @@ const createRecipeCard = (recipe) => {
                               <a href="${recipe.url}">More</a>
                             </div>
                           </div>
-                   </div>`
+                   </div>
+                    <br>`
 
     return recipeCard
 }
 
 const requestRecipes = async (id) => {
     let result = await fetch ('http://localhost:3000/user/' + id + '/data')
-
     return result.json()
+}
+
+/*use the recipe api to make a fetch, results the result*/
+const requestRecipeSearch = async (type, search) => {
+    let baseUrl = 'https://api.edamam.com/search?'
+    baseUrl = baseUrl + (type + '=' + search)
+
+    baseUrl = baseUrl + '&app_id=' + app_id
+    baseUrl = baseUrl + '&app_key=' + app_key
+
+    const url = baseUrl.replace('#', '%23')
+
+    const result = await fetch(url, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+
+    return result.json();
 }
