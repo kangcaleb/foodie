@@ -93,8 +93,8 @@ const renderSearchResults = (response) => {
 const configNav = () => {
     const signOut = $('a#sign-out')
     signOut.on('click', () => {
-        // TODO actually sign out and go to dashboard
-        alert('Signed out')
+      logOutOnClick();
+      alert('Signed out')
     })
 
     const about = $('a#about')
@@ -117,4 +117,14 @@ const configNav = () => {
             alert(error)
         })
     })
+}
+
+async function logOutOnClick() {
+  await $.ajax("http://localhost:3000/logout", {
+    type: "GET",
+  }).then(() => {
+    setTimeout(function () {
+      window.location.href = "index.html";
+    }, 1000);
+  })
 }
