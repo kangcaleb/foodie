@@ -213,6 +213,7 @@ async function logOutOnClick() {
     type: "GET",
   }).then(() => {
     setTimeout(function () {
+        window.sessionStorage.removeItem("userID")
       window.location.href = "index.html";
     }, 1000);
   })
