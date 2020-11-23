@@ -6,6 +6,9 @@ app.use(bodyParser.json())
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use(express.static(__dirname));
+
+const path = require('path')
 
 const cors = require('cors')
 app.use(cors())
@@ -20,7 +23,7 @@ app.use(expressSession({
 }))
 
 
-const User = require('./user.js')
+const User = require('./backend/user.js')
 const userData = require('data-store')({ path: process.cwd() + '/data/user-data.json' })
 
 
@@ -191,7 +194,11 @@ app.delete('/user/:id/recipe', (req, res) => {
     }
 })
 
-const port = 3000
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '/index.html'))
+})
+
+const port = process.env.PORT || 3000
 app.listen(port, () => {
     console.log('app listening on port: ' + port)
 })

@@ -25,7 +25,7 @@ const createNavbar = () => {
     const nav = `<nav class="navbar has-background-white-ter" id = ${window.sessionStorage.getItem('userID')} role="navigation" aria-label="main navigation">
                       <div class="navbar-brand">
                         <a class="navbar-item" href="./dashboard.html">
-                          <img src="logo.png" width="28" height="28">
+                          <img src="../logo.png" width="28" height="28">
                         </a>
                     
                         <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
