@@ -9,10 +9,11 @@ app.use(express.urlencoded({ extended: true }))
 
 const expressSession = require('express-session')
 app.use(expressSession({
-    name: 'CalebSessionCookie',
-    secret: "express session password",
+    name: 'foodie-cookie',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    secret: "f00d1e",
+    cookie: {secure: false}
 }))
 
 
@@ -49,18 +50,26 @@ app.get('/users', (req, res) => {
 app.post('/login', (req,res) => {
     let email = req.body.email;
     let password = req.body.password;
+    console.log(req.sessionID)
 
-    let user = User.getAllUsers().filter(user => user.email === email)
+    if (req.session.user) {
+        res.status(409).send('user already logged in')
+        return
+    }
+
+    let user = User.getAllUsers().filter(account => account.email === email)
 
     if (user.length == 0) {
-        res.status(404).send("Not found");
+        res.status(404).send("User not found");
         return;
     }
     if (user[0].password == password) {
         console.log("User " + user[0].email + " credentials valid");
         req.session.user = user[0];
-        res.setHeader("Access-Control-Allow-Origin", "*")
-        res.json(true);
+        console.log(req.sessionID)
+        res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001")
+        res.setHeader("Access-Control-Allow-Credentials", true)
+        res.json(req.session.user);
         return;
     }
     res.status(403).send("Unauthorized");
@@ -70,23 +79,24 @@ app.post('/login', (req,res) => {
 * log out the user
 * */
 app.get('/logout', (req, res) => {
+    console.log(req.sessionID)
     delete req.session.user
+    console.log(req.sessionID)
+    console.log(req.session)
     res.setHeader("Access-Control-Allow-Origin", "*")
     res.json(true)
 })
 
-app.get('/current-user', (req, res) => {
+app.get('/login', (req, res) => {
+    console.log(req.sessionID)
     const user = req.session.user
-    console.log('current user endpoint hit')
-    console.log(req)
 
-    res.setHeader("Access-Control-Allow-Origin", "*")
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001")
     if (user) {
         res.json(user)
     } else {
-        res.send(400).send('error')
+        res.status(404).send('no user logged in')
     }
-
 })
 
 /*
@@ -113,7 +123,6 @@ app.post('/user', (req, res) => {
 * */
 app.get('/user/:id', (req, res) => {
     let user = User.getUser(req.params.id)
-
     if (user == null) {
         res.send(404).send('bad user request')
         return

@@ -175,15 +175,19 @@ async function createUserLogin(email,password){
 async function verifyLogin(email,password){
     const $message = $('#message');
     await $.ajax("http://localhost:3000/login", {
-        type: "POST",
+        method: "POST",
         dataType: "JSON",
         data: {
             "email": email,
             "password": password,
+        },
+        xhrFields: {
+            withCredentials: true
         }
-    }).then(() => {
+    }).then((user) => {
         $message.html('<span class="has-text-success">Success! You are now logged in.</span>');
         setTimeout(function () {
+            window.sessionStorage.setItem("userID", user.id.toString())
             window.location.href = "dashboard.html";
         }, 2000);
     }).catch(() => {
