@@ -81,9 +81,7 @@ const configSearch = () => {
 
     submit.on('click', () => {
         const searchText = searchBar.val()
-
         const searchResult = requestRecipeSearch('q', searchText)
-
         searchResult.then((res) => {
             $('.searchResult').empty()
             renderSearchResults(res)
@@ -92,6 +90,16 @@ const configSearch = () => {
         })
     })
 }
+
+/* const apiSearch = function(text) {
+    const searchResult = requestRecipeSearch('q', text);
+    searchResult.then((res) => {
+        return res
+    }).catch((error) => {
+        alert(error)
+    }) 
+} */
+
 
 /*takes in api response from search query and appends to root*/
 const renderSearchResults = (response) => {
@@ -110,13 +118,12 @@ const renderSearchResults = (response) => {
         let healthLabel = response.hits[i].recipe.healthLabels
         let serving = response.hits[i].recipe.yield
 
+
 /*        if(dietType.isEmpty()){
             dietType = 'None'
         }*/
 
-        const results = `
-                        
-                        <div class="container searchResult">
+        const results = `<div class="container searchResult">
                             <div class="card">
                                <div class="card-image">
                                 <div class="content">
@@ -139,15 +146,17 @@ const renderSearchResults = (response) => {
                               </div>
                             </div>                         
                         </div>`
-
+        
         $root.append(results)
-        infoButtonOnClick(response)
     }
+
+    infoButtonOnClick(response)
 }
 
 const infoButtonOnClick = (response) => {
     $root.on('click','.infoButton',function () {
-        renderInformationModal(response)
+        let recipe = event.target.parentNode.children[0].textContent;
+        renderInformationModal(response, recipe)
     })
 }
 
@@ -155,20 +164,33 @@ const saveButtonOnClick = () => {
 
 }
 
-const renderInformationModal = () => {
+const renderInformationModal = (response, recipe) => {
+
+    /** find ingredients and nutrient info from response given a recipe name */
+    let cur = response.hits.find(x => x.recipe.label == recipe);
+
+    let ingredients = cur.recipe.ingredients;
+    let url = cur.recipe.url;
+
+    let ingredList = ""
+    ingredients.forEach(ing => {
+      ingredList += `<p>-` + String(Object.values(ing)).split(',')[0] + `</p>`
+    })
+
+
     let infoModal = document.createElement('div');
     infoModal.setAttribute('class','modal is-active');
-
     infoModal.innerHTML = `
         <div class="modal-background"></div>
               <div class="modal-card">
                 <header class="modal-card-head">
-                    <p class="modal-card-title">Ingredient and NutrientInfo</p>
+                    <p class="modal-card-title">Ingredient and Source Info</p>
                 </header>
             <section class="modal-card-body">
                 <form class="box">
-                   <p></p>
-                                                                                   
+                  <h4>Ingredients:</h4>` +
+                    ingredList +
+                  `<a href = "${url}" target="_blank">Recipe Source</a>                                                    
                 </form>
                </section>
         <footer class="modal-card-foot">
