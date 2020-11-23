@@ -3,3 +3,8 @@ html {
     background-size: cover;
     background-repeat: no-repeat;
 }
+
+video {
+    object-fit: cover;
+    position: absolute;
+}
