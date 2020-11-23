@@ -1,3 +1,12 @@
+html {
+    background-image: url("dashboardbg.jpg");
+    background-size: cover;
+    background-repeat: repeat;
+}
+
+.navbar {
+    opacity: 0.9;
+}
 /* Words container */
 .ac__inner{
     background: #f6f6f6;
