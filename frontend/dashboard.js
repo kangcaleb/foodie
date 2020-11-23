@@ -22,7 +22,7 @@ $(function () {
 const $root = $('#root');
 
 const createNavbar = () => {
-    const nav = `<nav class="navbar has-background-white-ter" role="navigation" aria-label="main navigation">
+    const nav = `<nav class="navbar has-background-white-ter" id = ${window.sessionStorage.getItem('userID')} role="navigation" aria-label="main navigation">
                       <div class="navbar-brand">
                         <a class="navbar-item" href="./dashboard.html">
                           <img src="logo.png" width="28" height="28">
@@ -99,7 +99,8 @@ const configSearch = () => {
 /*takes in api response from search query and appends to root*/
 const renderSearchResults = (response) => {
 
-    $root.append(`<div class="container wrapper" style="margin-top: 30px;"></div>`)
+    const $rootContent = $('div#root-content')
+    $rootContent.append(`<div class="container wrapper" style="margin-top: 30px;"></div>`)
 
     for(let i=0; i<response.hits.length; i++){
 
@@ -134,11 +135,11 @@ const renderSearchResults = (response) => {
                             </div>                         
                         </div>`
         
-        $root.append(results)
+        $rootContent.append(results)
     }
 
     infoButtonOnClick(response);
-    saveButtonOnClick();
+    saveButtonOnClick(response);
 }
 
 const infoButtonOnClick = (response) => {
@@ -148,10 +149,26 @@ const infoButtonOnClick = (response) => {
     })
 }
 
-const saveButtonOnClick = () => {
+const saveButtonOnClick = (response) => {
   $root.on('click', '.saveButton', function() {
     event.target.parentNode.append(`Recipe Saved!`);
+    let user = document.getElementsByClassName("navbar")[0].id;
+    let recipe = event.target.parentNode.children[0].textContent;
+    let uri = response.hits.find(x=> x.recipe.label == recipe).recipe.uri;
+    saveRecipe(user, uri);
   })
+}
+
+async function saveRecipe(user, uri) {
+    await $.ajax("http://localhost:3000/user/" + user + "/recipe", {
+        type = "POST",
+        datatype = "JSON",
+        data: {
+          "id":user,
+          "recipes":uri,
+        }
+    })
+
 }
 
 const renderInformationModal = (response, recipe) => {
@@ -205,11 +222,11 @@ const configNav = () => {
     const myRecipes = $('a#my-recipes')
     myRecipes.on('click', () => {
         // TODO go to my recipes pages
+        let user = document.getElementsByClassName("navbar")[0].id;
         const rootContent = $('div#root-content')
         rootContent.empty()
-        rootContent.append(`recipes here`)
 
-        /*const list = createRecipeList()
+        /*const list = createRecipeList(user)
 
         list.then((value) => {
             rootContent.append(value)
@@ -221,8 +238,8 @@ const configNav = () => {
 
 
 
-/* async function createRecipeList() {
-  await $.ajax("http://localhost:3000/users", {
+/* async function createRecipeList(user) {
+  await $.ajax("http://localhost:3000/" + user + "/data", {
     type: "GET",
   })
 } */
