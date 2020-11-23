@@ -42,7 +42,7 @@ const createRecipeCard = (recipe) => {
 }
 
 const requestRecipes = async (id) => {
-    let result = await fetch ('http://localhost:3000/user/' + id + '/data')
+    let result = await fetch (location.origin+'/user/' + id + '/data')
     return result.json()
 }
 
