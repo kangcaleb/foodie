@@ -157,7 +157,7 @@ async function getUserID(){
 
 //User sign up request
 async function createUserLogin(email,password){
-    let response = await $.ajax("http://localhost:3000/user", {
+    let response = await $.ajax(location.origin+"/user", {
         type: "POST",
         dataType: "JSON",
         data: {
