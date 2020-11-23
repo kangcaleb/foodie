@@ -3,6 +3,7 @@ $(function () {
     $root.append(`<div id="root-content" class="container"></div>`)
     $('div#root-content').append(createSearch())
 
+
     let ac = new AmazonAutocomplete({
         selector: '#recipe-search',
         delay: 200,
@@ -17,7 +18,7 @@ $(function () {
 const $root = $('#root');
 
 const createNavbar = () => {
-    const nav = `<nav class="navbar" role="navigation" aria-label="main navigation">
+    const nav = `<nav class="navbar has-background-white-ter" role="navigation" aria-label="main navigation">
                       <div class="navbar-brand">
                         <a class="navbar-item" href="./dashboard.html">
                           <img src="logo.png" width="28" height="28">
@@ -44,7 +45,7 @@ const createNavbar = () => {
                         <div class="navbar-end">
                           <div class="navbar-item">
                             <div class="buttons">
-                              <a class="button is-primary" id="sign-out">
+                              <a class="button is-danger" id="sign-out">
                                 <strong>Sign Out</strong>
                               </a>
                             </div>
@@ -57,7 +58,8 @@ const createNavbar = () => {
 
 /*creates and returns an html element (as a string) with a search bar and submit button*/
 const createSearch = () => {
-    const div = `<div class="columns is-centered">
+    const div = `<br>
+                    <div class="columns is-centered searchbar">
                     <div class="column is-half">
                      <div class="field has-addons">
                       <div class="control is-expanded">
@@ -71,7 +73,6 @@ const createSearch = () => {
                 </div>`
 
     return div
-
 }
 
 /*Adds callbacks to search submit button*/
@@ -95,13 +96,10 @@ const configSearch = () => {
 
 /*takes in api response from search query and appends to root*/
 const renderSearchResults = (response) => {
-    // right now it just makes a p element with the json content and appends to root
+
+    $root.append(`<div class="container wrapper" style="margin-top: 30px;"></div>`)
 
     for(let i=0; i<response.hits.length; i++){
-        /*const results = `<div class="container">
-                        <img src="${response.hits[i].recipe.image}" alt="placeholder">
-                        <p>${response.hits[i].recipe.label}</p>
-                    </div>`*/
 
         let calories = Math.round(response.hits[i].recipe.calories)
         let dietType = response.hits[i].recipe.dietLabels
@@ -110,13 +108,10 @@ const renderSearchResults = (response) => {
         let healthLabel = response.hits[i].recipe.healthLabels
         let serving = response.hits[i].recipe.yield
 
-/*        if(dietType.isEmpty()){
-            dietType = 'None'
-        }*/
 
-        const results = `
-                        
-                        <div class="container searchResult">
+        const results = ` 
+                                 
+                        <div class="container searchResult" style="border: 2px grey;margin-top: 30px;">
                             <div class="card">
                                <div class="card-image">
                                 <div class="content">
@@ -138,9 +133,10 @@ const renderSearchResults = (response) => {
                                 </div>
                               </div>
                             </div>                         
-                        </div>`
-
-        $root.append(results)
+                        </div>
+                      
+                        `
+        $('.wrapper').append(results)
         infoButtonOnClick(response)
     }
 }
@@ -172,9 +168,7 @@ const renderInformationModal = () => {
                 </form>
                </section>
         <footer class="modal-card-foot">
-        <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>
-        <!--<button class="modal-close is-large" aria-label="close"></button>-->
-        
+        <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>        
 `
     $root.append(infoModal)
 }

@@ -48,12 +48,15 @@ const requestRecipes = async (id) => {
 }
 
 /*use the recipe api to make a fetch, results the result*/
+/*Return 30 results from the search*/
+/*Infinite scrolling not supported due to api call limit */
 const requestRecipeSearch = async (type, search) => {
     let baseUrl = 'https://api.edamam.com/search?'
     baseUrl = baseUrl + (type + '=' + search)
 
     baseUrl = baseUrl + '&app_id=' + app_id
     baseUrl = baseUrl + '&app_key=' + app_key
+    baseUrl = baseUrl + '&from=0&to=30'
 
     const url = baseUrl.replace('#', '%23')
 
