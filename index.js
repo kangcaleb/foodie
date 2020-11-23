@@ -57,11 +57,6 @@ app.post('/login', (req,res) => {
     let email = req.body.email;
     let password = req.body.password;
 
-    if (req.session.user) {
-        res.status(409).send('user already logged in')
-        return
-    }
-
     let user = User.getAllUsers().filter(account => account.email === email)
 
     if (user.length == 0) {
@@ -91,12 +86,7 @@ app.get('/logout', (req, res) => {
 
 app.get('/login', (req, res) => {
     const user = req.session.user
-
-    if (user) {
-        res.json(user)
-    } else {
-        res.status(404).send('no user logged in')
-    }
+    res.json(user)
 })
 
 /*
