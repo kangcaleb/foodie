@@ -3,11 +3,6 @@ $(function () {
     renderLoginForm();
     loginOnClick();
     signUpOnClick();
-
-
-    $root.append(createSearch())
-    configSearch();
-
 })
 
 const $root = $('#root');
@@ -174,6 +169,10 @@ async function createUserLogin(email,password){
 //Login credential verification
 async function verifyLogin(email,password){
     const $message = $('#message');
+    if (email == "" || password == "") {
+        $message.html('<span class="has-text-danger">Something went wrong and you were not logged in. Check your email and password and your internet connection.</span>')
+        return;
+    }
     await $.ajax("http://localhost:3000/login", {
         method: "POST",
         dataType: "JSON",
