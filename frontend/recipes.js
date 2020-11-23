@@ -1,7 +1,9 @@
 const createRecipeList = async () => {
     const list = $('<div id="recipes-list" class="container"></div>')
 
-    const result = await requestRecipes(CURRENT_USER) // TODO make this line get the current user not just the user at 0
+    const userObj = await getCurrentUser()
+
+    const result = await requestRecipes(userObj.id) // TODO make this line get the current user not just the user at 0
     const recipes = result.recipes
 
     for (let i=0; i<recipes.length; i++) {
@@ -12,6 +14,14 @@ const createRecipeList = async () => {
     }
 
     return list
+}
+
+const getCurrentUser = async () => {
+    const result = await fetch(location.origin+'/login', {
+        method: "GET"
+    })
+
+    return result.json()
 }
 
 //Give a recipe object from Edamam Documentation
