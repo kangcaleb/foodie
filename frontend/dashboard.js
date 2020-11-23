@@ -1,4 +1,8 @@
 $(function () {
+    if (window.sessionStorage.getItem('userID') == null) {
+        alert("403 Forbidden")
+        return
+    }
     $root.append(createNavbar())
     $root.append(`<div id="root-content" class="container"></div>`)
     $('div#root-content').append(createSearch())
