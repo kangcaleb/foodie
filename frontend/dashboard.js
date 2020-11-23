@@ -137,7 +137,8 @@ const renderSearchResults = (response) => {
         $root.append(results)
     }
 
-    infoButtonOnClick(response)
+    infoButtonOnClick(response);
+    saveButtonOnClick();
 }
 
 const infoButtonOnClick = (response) => {
@@ -148,7 +149,9 @@ const infoButtonOnClick = (response) => {
 }
 
 const saveButtonOnClick = () => {
-
+  $root.on('click', '.saveButton', function() {
+    event.target.parentNode.append(`Recipe Saved!`);
+  })
 }
 
 const renderInformationModal = (response, recipe) => {
@@ -204,16 +207,25 @@ const configNav = () => {
         // TODO go to my recipes pages
         const rootContent = $('div#root-content')
         rootContent.empty()
+        rootContent.append(`recipes here`)
 
-        const list = createRecipeList()
+        /*const list = createRecipeList()
 
         list.then((value) => {
             rootContent.append(value)
         }).catch((error) => {
             alert(error)
-        })
+        }) */
     })
 }
+
+
+
+/* async function createRecipeList() {
+  await $.ajax("http://localhost:3000/users", {
+    type: "GET",
+  })
+} */
 
 async function logOutOnClick() {
   await $.ajax("http://localhost:3000/logout", {
