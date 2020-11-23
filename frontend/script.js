@@ -179,9 +179,6 @@ async function verifyLogin(email,password){
         data: {
             "email": email,
             "password": password,
-        },
-        xhrFields: {
-            withCredentials: true
         }
     }).then((user) => {
         $message.html('<span class="has-text-success">Success! You are now logged in.</span>');

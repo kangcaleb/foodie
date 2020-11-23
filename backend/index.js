@@ -7,6 +7,9 @@ app.use(bodyParser.json())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+const cors = require('cors')
+app.use(cors())
+
 const expressSession = require('express-session')
 app.use(expressSession({
     name: 'foodie-cookie',
@@ -67,7 +70,7 @@ app.post('/login', (req,res) => {
         console.log("User " + user[0].email + " credentials valid");
         req.session.user = user[0];
         console.log(req.sessionID)
-        res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001")
+        res.setHeader("Access-Control-Allow-Origin", "*")
         res.setHeader("Access-Control-Allow-Credentials", true)
         res.json(req.session.user);
         return;
