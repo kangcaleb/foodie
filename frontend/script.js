@@ -9,7 +9,7 @@ const $root = $('#root');
 
 const renderLogo = function () {
     $root.append(`<figure class="image container is-128x128">
-                        <img src="logo.png">
+                        <img src="../logo.png">
                     </figure>`)
 }
 const renderLoginForm = function (){
@@ -173,7 +173,7 @@ async function verifyLogin(email,password){
         $message.html('<span class="has-text-danger">Something went wrong and you were not logged in. Check your email and password and your internet connection.</span>')
         return;
     }
-    await $.ajax("http://localhost:3000/login", {
+    await $.ajax(location.origin +"/login", {
         type: "POST",
         dataType: "JSON",
         data: {
@@ -184,7 +184,7 @@ async function verifyLogin(email,password){
         $message.html('<span class="has-text-success">Success! You are now logged in.</span>');
         setTimeout(function () {
             window.sessionStorage.setItem("userID", user.id.toString())
-            window.location.href = "dashboard.html";
+            window.location.href = "frontend/dashboard.html";
         }, 2000);
     }).catch(() => {
         $message.html('<span class="has-text-danger">Something went wrong and you were not logged in. Check your email and password and your internet connection.</span>');
