@@ -92,7 +92,6 @@ app.get('/logout', (req, res) => {
 app.get('/login', (req, res) => {
     const user = req.session.user
 
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001")
     if (user) {
         res.json(user)
     } else {
