@@ -1,8 +1,14 @@
 $(function () {
     $root.append(createNavbar())
     $root.append(`<div id="root-content" class="container"></div>`)
-    $('div#root-content').append(`<section class="section"><h1 class="title">Search for a Recipe!</h1></section>`)
     $('div#root-content').append(createSearch())
+
+    let ac = new AmazonAutocomplete({
+        selector: '#recipe-search',
+        delay: 200,
+        showWords: true,
+        hideOnblur: true
+    })
 
     configSearch()
     configNav()
@@ -51,12 +57,16 @@ const createNavbar = () => {
 
 /*creates and returns an html element (as a string) with a search bar and submit button*/
 const createSearch = () => {
-    const div = `<div class="field has-addons ">
+    const div = `<div class="columns is-centered">
+                    <div class="column is-half">
+                     <div class="field has-addons">
                       <div class="control is-expanded">
-                            <input id='recipe-search' autocomplete="on" class="input" type="text" placeholder="Your Favorite Recipe (or your girl's favorite recipe)">
+                            <input id='recipe-search' autocomplete="on" class="input" type="text" placeholder="Your Favorite Recipe">
                         </div>
                         <div class="control">
-                             <button id='recipe-submit'class="button is-success searchButton" type="click">Search</button>
+                             <button id='recipe-submit'class="button is-success searchButton">Search</button>
+                        </div>
+                        </div>
                         </div>
                 </div>`
 
@@ -75,6 +85,7 @@ const configSearch = () => {
         const searchResult = requestRecipeSearch('q', searchText)
 
         searchResult.then((res) => {
+            $('.searchResult').empty()
             renderSearchResults(res)
         }).catch((error) => {
             alert(error)
@@ -104,8 +115,8 @@ const renderSearchResults = (response) => {
         }*/
 
         const results = `
-                        <br>
-                        <div class="container">
+                        
+                        <div class="container searchResult">
                             <div class="card">
                                <div class="card-image">
                                 <div class="content">
