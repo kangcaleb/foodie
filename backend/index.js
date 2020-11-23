@@ -53,7 +53,6 @@ app.get('/users', (req, res) => {
 app.post('/login', (req,res) => {
     let email = req.body.email;
     let password = req.body.password;
-    console.log(req.sessionID)
 
     if (req.session.user) {
         res.status(409).send('user already logged in')
@@ -69,7 +68,7 @@ app.post('/login', (req,res) => {
     if (user[0].password == password) {
         console.log("User " + user[0].email + " credentials valid");
         req.session.user = user[0];
-        console.log(req.sessionID)
+
         res.setHeader("Access-Control-Allow-Origin", "*")
         res.setHeader("Access-Control-Allow-Credentials", true)
         res.json(req.session.user);
@@ -82,16 +81,12 @@ app.post('/login', (req,res) => {
 * log out the user
 * */
 app.get('/logout', (req, res) => {
-    console.log(req.sessionID)
     delete req.session.user
-    console.log(req.sessionID)
-    console.log(req.session)
     res.setHeader("Access-Control-Allow-Origin", "*")
     res.json(true)
 })
 
 app.get('/login', (req, res) => {
-    console.log(req.sessionID)
     const user = req.session.user
 
     res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001")
@@ -141,7 +136,6 @@ app.get('/users-data', (req, res) => {
 })
 
 app.get('/user/:id/data', (req, res) => {
-    console.log('hit user data endpoint')
     const id = req.params.id
 
     if (userData.has(id)) {
@@ -180,7 +174,6 @@ app.delete('/user/:id/recipe', (req, res) => {
         const user = User.getUserData(id)
 
         // TODO Defensive Programing for valid recipe, if time
-        console.log(user.recipes)
 
         const updated = user.recipes.filter(rec => rec != recipe)
 
