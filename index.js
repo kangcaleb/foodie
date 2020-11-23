@@ -203,7 +203,7 @@ app.put('/user/:id', (req, res) => {
         if (verifyCredentials(email, password) == 1) {
             userData.set(id, {
                 id: id,
-                email: newEmail
+                email: newEmail,
                 pasword: newPassword
             })
 
