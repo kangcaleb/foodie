@@ -7,12 +7,16 @@ app.use(bodyParser.json())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+const cors = require('cors')
+app.use(cors())
+
 const expressSession = require('express-session')
 app.use(expressSession({
-    name: 'CalebSessionCookie',
-    secret: "express session password",
+    name: 'foodie-cookie',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    secret: "f00d1e",
+    cookie: {secure: false}
 }))
 
 
@@ -50,17 +54,24 @@ app.post('/login', (req,res) => {
     let email = req.body.email;
     let password = req.body.password;
 
-    let user = User.getAllUsers().filter(user => user.email === email)
+    if (req.session.user) {
+        res.status(409).send('user already logged in')
+        return
+    }
+
+    let user = User.getAllUsers().filter(account => account.email === email)
 
     if (user.length == 0) {
-        res.status(404).send("Not found");
+        res.status(404).send("User not found");
         return;
     }
     if (user[0].password == password) {
         console.log("User " + user[0].email + " credentials valid");
-        req.session.user = user;
+        req.session.user = user[0];
+
         res.setHeader("Access-Control-Allow-Origin", "*")
-        res.json(true);
+        res.setHeader("Access-Control-Allow-Credentials", true)
+        res.json(req.session.user);
         return;
     }
     res.status(403).send("Unauthorized");
@@ -73,6 +84,17 @@ app.get('/logout', (req, res) => {
     delete req.session.user
     res.setHeader("Access-Control-Allow-Origin", "*")
     res.json(true)
+})
+
+app.get('/login', (req, res) => {
+    const user = req.session.user
+
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3001")
+    if (user) {
+        res.json(user)
+    } else {
+        res.status(404).send('no user logged in')
+    }
 })
 
 /*
@@ -99,7 +121,6 @@ app.post('/user', (req, res) => {
 * */
 app.get('/user/:id', (req, res) => {
     let user = User.getUser(req.params.id)
-
     if (user == null) {
         res.send(404).send('bad user request')
         return
@@ -115,7 +136,6 @@ app.get('/users-data', (req, res) => {
 })
 
 app.get('/user/:id/data', (req, res) => {
-    console.log('hit user data endpoint')
     const id = req.params.id
 
     if (userData.has(id)) {
@@ -154,7 +174,6 @@ app.delete('/user/:id/recipe', (req, res) => {
         const user = User.getUserData(id)
 
         // TODO Defensive Programing for valid recipe, if time
-        console.log(user.recipes)
 
         const updated = user.recipes.filter(rec => rec != recipe)
 

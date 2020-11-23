@@ -180,9 +180,10 @@ async function verifyLogin(email,password){
             "email": email,
             "password": password,
         }
-    }).then(() => {
+    }).then((user) => {
         $message.html('<span class="has-text-success">Success! You are now logged in.</span>');
         setTimeout(function () {
+            window.sessionStorage.setItem("userID", user.id.toString())
             window.location.href = "dashboard.html";
         }, 2000);
     }).catch(() => {
