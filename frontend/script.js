@@ -174,7 +174,7 @@ async function verifyLogin(email,password){
         return;
     }
     await $.ajax("http://localhost:3000/login", {
-        method: "POST",
+        type: "POST",
         dataType: "JSON",
         data: {
             "email": email,
