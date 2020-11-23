@@ -159,7 +159,7 @@ const saveButtonOnClick = (response) => {
   })
 }
 
-async function saveRecipe(user, uri) {
+/*async function saveRecipe(user, uri) {
     await $.ajax("http://localhost:3000/user/" + user + "/recipe", {
         type = "POST",
         datatype = "JSON",
@@ -168,8 +168,7 @@ async function saveRecipe(user, uri) {
           "recipes":uri,
         }
     })
-
-}
+} */
 
 const renderInformationModal = (response, recipe) => {
 
