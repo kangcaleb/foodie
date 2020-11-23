@@ -183,7 +183,6 @@ async function verifyLogin(email,password){
     }).then((user) => {
         $message.html('<span class="has-text-success">Success! You are now logged in.</span>');
         setTimeout(function () {
-            window.sessionStorage.setItem("userID", user.id.toString())
             window.location.href = "frontend/dashboard.html";
         }, 2000);
     }).catch(() => {
