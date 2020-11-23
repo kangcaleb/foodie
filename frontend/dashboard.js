@@ -216,7 +216,7 @@ const configNav = () => {
 }
 
 async function logOutOnClick() {
-  await $.ajax("http://localhost:3000/logout", {
+  await $.ajax(location.origin+"/logout", {
     type: "GET",
   }).then(() => {
     setTimeout(function () {
