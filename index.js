@@ -97,15 +97,18 @@ app.post('/user', (req, res) => {
     const email = req.body.email
     const password = req.body.password
 
-    let user = User.createUser(email, password)
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    const isVerified = verifyCredentials(email, password)
 
-    if (user == null) {
-        res.status(400).send('Fix request')
+    if (isVerified == -1) {
+        res.status(400).send('No user found')
+        return
+    } else if (isVerified == 0) {
+        res.status(401).send('Credentials Invalid')
+    } else {
+        res.send(User.getAllUsers().filter(account => account.email === email)[0])
         return
     }
-
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    res.json(user)
 })
 
 /*
@@ -186,6 +189,48 @@ app.delete('/user/:id/recipe', (req, res) => {
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/index.html'))
 })
+
+app.put('/user/:id', (req, res) => {
+    const id = req.params.id
+    const email = req.body.email
+    const newEmail = req.body.newEmail
+    const password = req.body.password
+    const newPassword = req.body.newPassword
+
+    if (userData.has(id)) {
+        const data = userData.get(id)
+
+        if (verifyCredentials(email, password) == 1) {
+            userData.set(id, {
+                id: id,
+                email: newEmail
+                pasword: newPassword
+            })
+
+            res.json(userData.get(id))
+        } else {
+            res.status(404).send("invalid credentials")
+        }
+    } else {
+        res.status(404).send('no user found')
+    }
+
+
+})
+
+const verifyCredentials = (email, password) => {
+    let user = User.getAllUsers().filter(account => account.email === email)
+
+    if (user.length == 0) {
+        return -1;
+    }
+
+    if (user[0].password == password) {
+        return 1
+    } else {
+        return 0
+    }
+}
 
 const port = process.env.PORT || 3000
 app.listen(port, () => {
