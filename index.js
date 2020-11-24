@@ -57,22 +57,20 @@ app.post('/login', (req,res) => {
     let email = req.body.email;
     let password = req.body.password;
 
-    let user = User.getAllUsers().filter(account => account.email === email)
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    const isVerified = verifyCredentials(email, password)
 
-    if (user.length == 0) {
-        res.status(404).send("User not found");
-        return;
+    if (isVerified == -1) {
+        res.status(400).send('No user found')
+        return
+    } else if (isVerified == 0) {
+        res.status(401).send('Credentials Invalid')
+    } else {
+        const user = User.getAllUsers().filter(account => account.email === email)[0]
+        req.session.user = user
+        res.json(user)
+        return
     }
-    if (user[0].password == password) {
-        console.log("User " + user[0].email + " credentials valid");
-        req.session.user = user[0];
-
-        res.setHeader("Access-Control-Allow-Origin", "*")
-        res.setHeader("Access-Control-Allow-Credentials", true)
-        res.json(req.session.user);
-        return;
-    }
-    res.status(403).send("Unauthorized");
 })
 
 /*
@@ -97,18 +95,15 @@ app.post('/user', (req, res) => {
     const email = req.body.email
     const password = req.body.password
 
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    const isVerified = verifyCredentials(email, password)
+    let user = User.createUser(email, password)
 
-    if (isVerified == -1) {
-        res.status(400).send('No user found')
-        return
-    } else if (isVerified == 0) {
-        res.status(401).send('Credentials Invalid')
-    } else {
-        res.send(User.getAllUsers().filter(account => account.email === email)[0])
+    if (user == null) {
+        res.status(400).send('Fix request')
         return
     }
+
+    res.setHeader("Access-Control-Allow-Origin", "*")
+    res.json(user)
 })
 
 /*
@@ -193,19 +188,17 @@ app.get('/', (req, res) => {
 
 app.put('/user/:id', (req, res) => {
     const id = req.params.id
-    const email = req.body.email
     const newEmail = req.body.newEmail
     const password = req.body.password
     const newPassword = req.body.newPassword
 
-    if (userData.has(id)) {
-        const data = userData.get(id)
+    if (User.getUser(id) != null) {
 
         if (verifyCredentials(email, password) == 1) {
-            userData.set(id, {
+            User.setUserData(id, {
                 id: id,
                 email: newEmail,
-                pasword: newPassword
+                password: newPassword
             })
 
             res.json(userData.get(id))

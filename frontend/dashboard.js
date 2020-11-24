@@ -139,7 +139,7 @@ const renderSearchResults = (response) => {
                             </div>                         
                         </div>`
         
-        $rootContent.append(results)
+        $('div#root-content').append(results)
     }
 
     infoButtonOnClick(response);
