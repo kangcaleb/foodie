@@ -103,7 +103,8 @@ const configSearch = () => {
 /*takes in api response from search query and appends to root*/
 const renderSearchResults = (response) => {
 
-    $root.append(`<div class="container wrapper" style="margin-top: 30px;"></div>`)
+    const $rootContent = $('div#root-content')
+    $rootContent.append(`<div class="container wrapper" style="margin-top: 30px;"></div>`)
 
     for(let i=0; i<response.hits.length; i++){
 
@@ -141,7 +142,8 @@ const renderSearchResults = (response) => {
         $('div#root-content').append(results)
     }
 
-    infoButtonOnClick(response)
+    infoButtonOnClick(response);
+    saveButtonOnClick(response);
 }
 
 const infoButtonOnClick = (response) => {
@@ -151,8 +153,25 @@ const infoButtonOnClick = (response) => {
     })
 }
 
-const saveButtonOnClick = () => {
+const saveButtonOnClick = (response) => {
+  $root.on('click', '.saveButton', function() {
+    event.target.parentNode.append(`Recipe Saved!`);
+    let recipe_name = event.target.parentNode.children[0].textContent;
+    let recipe = response.hits.find(x=> x.recipe.label == recipe_name).recipe;
+    saveRecipe(recipe);
+  })
+}
 
+async function saveRecipe(recipe) {
+  let user = await getCurrentUser();
+  let response = await $.ajax(location.origin+"/user/"+user.id+"/recipe", {
+    type: "POST",
+    dataType: "JSON",
+    data: {
+        "recipe": recipe,
+    }}).catch((error) => {
+      alert(error)
+    })
 }
 
 const renderInformationModal = (response, recipe) => {
@@ -211,15 +230,58 @@ const configNav = () => {
         // TODO go to my recipes pages
         const rootContent = $('div#root-content')
         rootContent.empty()
-
-        const list = createRecipeList()
-
-        list.then((value) => {
-            rootContent.append(value)
-        }).catch((error) => {
-            alert(error)
-        })
+        getRecipes();
     })
+}
+
+const renderMyRecipes = function(recipes) {
+  const rootContent = $('div#root-content')
+  recipes.forEach(rec => {
+      let calories = Math.round(rec.calories)
+      let dietType = rec.dietLabels
+      let recipeImage = rec.image
+      let recipeName = rec.label
+      let healthLabel = rec.healthLabels
+      let serving = rec.yield
+
+        const results = `<div class="container searchResult">
+                            <div class="card">
+                               <div class="card-image">
+                                <div class="content">
+                                    <br>
+                                    <figure class="image is-128x128">
+                                      <img src="${recipeImage}" alt="Placeholder image">
+                                    </figure>
+                                </div>
+                              </div>
+                            <div class="card-content">
+                                <div class="content">
+                                  <p>${recipeName}</p>
+                                  <p>Calories: ${calories}</p>
+                                  <p>Serving: ${serving}</p>
+                                  <p>Diet: ${dietType}</p>
+                                  <p>Health Label: ${healthLabel}</p>
+                                  <button class="button is-danger deletebtn">Delete</button>
+                                  <button class="button infoButton">More Information</button>
+                                  <button class="button is-warning notes">Personal Notes</button>
+                                </div>
+                              </div>
+                            </div>                         
+                        </div>`
+        
+        rootContent.append(results)
+  })
+  infoButtonOnClick(response);
+}
+
+async function getRecipes() {
+  let user = await getCurrentUser()
+  await $.ajax(location.origin+"/user/"+user.id+"/data", {
+    type: "GET",
+    success: function(response) {
+      renderMyRecipes(response.recipes)
+    }
+  })
 }
 
 async function logOutOnClick() {
