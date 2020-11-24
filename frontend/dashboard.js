@@ -6,7 +6,7 @@ $(async function () {
         return
     }
 
-    $root.append(createNavbar(user))
+    $root.append(createNavbar())
     $root.append(`<div id="root-content" class="container"></div>`)
     $('div#root-content').append(`<br><div class="columns is-centered"><h1 class="title is-2">Welcome, ${user.email}!</h1></div>`)
     $('div#root-content').append(createSearch())
@@ -25,7 +25,7 @@ $(async function () {
 
 const $root = $('#root');
 
-const createNavbar = (user) => {
+const createNavbar = () => {
     const nav = `<nav class="navbar has-background-white-ter" role="navigation" aria-label="main navigation">
                       <div class="navbar-brand">
                         <a class="navbar-item" href="./dashboard.html">
