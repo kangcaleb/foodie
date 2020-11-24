@@ -21,6 +21,7 @@ $(async function () {
     configSearch()
     configNav()
     myAccountOnClick()
+    verifyOnClick()
 })
 
 const $root = $('#root');
@@ -170,6 +171,7 @@ const saveButtonOnClick = () => {
 
 const myAccountOnClick = () => {
     $root.on('click','.myAccount',function(){
+        //renderEditForm()
         renderEditForm()
     })
 }
@@ -221,44 +223,63 @@ const renderEditForm = () => {
             <section class="modal-card-body">
                 <form class="box">
                     <div class="field">
-                    <label class="label">Email</label>
+                    <label class="label">Current Email</label>
                        <p class="control has-icons-left has-icons-right">                                        
-                          <input class="input" id="newUserEmail"  type="email" placeholder="New Email?">
+                          <input class="input" id="currentUserEmail" type="email" placeholder="Current Email">
                             <span class="icon is-small is-left">
                                <i class="fas fa-at"></i>    
                             </span>
-                           <button class="button is-danger updateEmailButton">Update Email!</button> 
-                       </p>
-                       
+                       </p>                     
                      </div>
                      <div class="field">
-                       <label class="label">Password</label>
+                       <label class="label">Current Password</label>
                          <p class="control has-icons-left">
-                           <input class="input" id="newUserPassword" type="input" placeholder="New Password?">
+                           <input class="input" id="currentUserPassword" type="password" placeholder="Current Password">
                              <span class="icon is-small is-left">
                                <i class="fas fa-lock"></i>
                              </span>
-                             <button class="button is-danger updatePasswordButton" >Update Password!</button>
-                         </p>
-                         
+                         </p>                       
+                       </div>
+                     <div class="field">
+                    <label class="label">New Email</label>
+                       <p class="control has-icons-left has-icons-right">                                        
+                          <input class="input" id="newUserEmail" type="email" placeholder="New Email?">
+                            <span class="icon is-small is-left">
+                               <i class="fas fa-at"></i>    
+                            </span>
+                       </p>                     
+                     </div>
+                     <div class="field">
+                       <label class="label">New Password</label>
+                         <p class="control has-icons-left">
+                           <input class="input" id="newUserPassword" type="password" placeholder="New Password?">
+                             <span class="icon is-small is-left">
+                               <i class="fas fa-lock"></i>
+                             </span>
+                         </p>                       
                        </div>                                         
                 </form>
                </section>
         <footer class="modal-card-foot">
+        <button class="button is-danger updateCredentialButton" >Update Credentials!</button>
         <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>        
 `
     $root.append(editModal)
 }
 
-const emailUpdateOnClick = () => {
-    $root.on('click','.updateEmailButton',function(){
-        alert('Update')
-    })
-}
+const verifyOnClick = () => {
 
-const passwordUpdateOnClick = () => {
-    $root.on('click','.updatePasswordButton',function(){
-        alert('Update')
+    let email = ''
+    let password = ''
+    let ne = ''
+    let np = ''
+
+    $root.on('click','.updateCredentialButton', function(){
+        email = $('input#currentUserEmail').val()
+        password = $('input#currentUserPassword').val()
+        ne = $('input#newUserEmail').val()
+        np = $('input#newUserPassword').val()
+        verificationRequest(email,password,ne,np)
     })
 }
 
@@ -299,4 +320,22 @@ async function logOutOnClick() {
       window.location.href = "../index.html";
     }, 1000);
   })
+}
+
+async function verificationRequest(email,password,newEmail,newPassword){
+    const currentUser = await getCurrentUser()
+    const $verificationMessage = $('#verificationMessage')
+    await $.ajax(location.origin+"/user/"+currentUser.id,{
+        type: "PUT",
+        data: {
+            "email": email,
+            "password": password,
+            "newEmail": newEmail,
+            "newPassword": newPassword
+        }
+    }).then(() => {
+        $verificationMessage.html('<span class="has-text-success">Credentials updated successfully</span>');
+    }).catch(() => {
+        $verificationMessage.html('<span class="has-text-danger">Invalid current email/password</span>');
+    })
 }

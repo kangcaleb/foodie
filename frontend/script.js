@@ -140,7 +140,8 @@ const signUpOnClick = function() {
         renderSignUpModal()
     })
 }
-async function getUserInfo(){
+
+/*async function getUserInfo(){
     let response = await $.ajax("http://localhost:3000/users",{
         type: "GET",
         dataType: "json",
@@ -153,7 +154,7 @@ async function getUserID(){
         dataType: "json",
     })
     $root.append(JSON.stringify(response))
-}
+}*/
 
 //User sign up request
 async function createUserLogin(email,password){
