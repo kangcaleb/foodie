@@ -149,7 +149,7 @@ app.post('/user/:id/recipe', (req, res) => {
 
         if (userdata == null) {
             userData.set(id.toString(), {
-                id: id,
+                id: parseInt(id),
                 recipes: [recipe]
             })
 
@@ -163,20 +163,19 @@ app.post('/user/:id/recipe', (req, res) => {
         res.setHeader("Access-Control-Allow-Origin", "*")
         res.json(user)
     } else {
-        res.send(404).send('no user')
+        res.status(404).send('no user')
     }
 })
 
 app.delete('/user/:id/recipe', (req, res) => {
     const id = req.params.id
-    const recipe = req.query.recipe
+    const recipe = req.body.recipe
 
     if (User.getUser(id) != null) {
         const user = User.getUserData(id)
 
         // TODO Defensive Programing for valid recipe, if time
-
-        const updated = user.recipes.filter(rec => rec.uri != recipe.uri)
+        const updated = user.recipes.filter(rec => rec.uri !== recipe.uri)
 
         if (updated.length != user.recipes.length) {
             user.recipes = updated
@@ -185,7 +184,7 @@ app.delete('/user/:id/recipe', (req, res) => {
             res.setHeader("Access-Control-Allow-Origin", "*")
             res.json(user)
         } else {
-            res.send(404).send('bad recipe')
+            res.status(404).send('bad recipe' + recipe.uri)
         }
     } else {
         res.send(404).send('no user')
