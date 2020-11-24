@@ -259,6 +259,11 @@ const renderEditForm = () => {
                          </p>                       
                        </div>                                         
                 </form>
+                <div class="field">
+                   <div class="control">
+                        <p id="verificationMessage"></p>
+                   </div>
+                </div>
                </section>
         <footer class="modal-card-foot">
         <button class="button is-danger updateCredentialButton" >Update Credentials!</button>
