@@ -261,7 +261,7 @@ const renderMyRecipes = function(recipes) {
                                   <p>Serving: ${serving}</p>
                                   <p>Diet: ${dietType}</p>
                                   <p>Health Label: ${healthLabel}</p>
-                                  <button class="button is-danger deletebtn">Save</button>
+                                  <button class="button is-danger deletebtn">Delete</button>
                                   <button class="button infoButton">More Information</button>
                                   <button class="button is-warning notes">Personal Notes</button>
                                 </div>
