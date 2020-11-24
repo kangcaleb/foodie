@@ -8,6 +8,7 @@ $(async function () {
 
     $root.append(createNavbar())
     $root.append(`<div id="root-content" class="container"></div>`)
+    $('div#root-content').append(`<br><div class="columns is-centered"><h1 class="title is-2">Welcome, ${user.email}!</h1></div>`)
     $('div#root-content').append(createSearch())
 
 
@@ -198,8 +199,11 @@ const configNav = () => {
 
     const about = $('a#about')
     about.on('click', () => {
-        // TODO implement about page
-        alert('about')
+        if (Math.random()<=0.33) {
+            window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstleyVEVO'
+        } else {
+            alert('about')
+        }
     })
 
     const myRecipes = $('a#my-recipes')
