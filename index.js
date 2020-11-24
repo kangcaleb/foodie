@@ -152,7 +152,6 @@ app.post('/user/:id/recipe', (req, res) => {
                 recipes: [recipe]
             })
             userData.save()
-            console.log(userData.get(id))
             res.json(userData.get(id))
             return
         }
