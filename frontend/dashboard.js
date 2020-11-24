@@ -228,27 +228,61 @@ const configNav = () => {
     const myRecipes = $('a#my-recipes')
     myRecipes.on('click', () => {
         // TODO go to my recipes pages
-        let user = document.getElementsByClassName("navbar")[0].id;
         const rootContent = $('div#root-content')
         rootContent.empty()
-
-        /*const list = createRecipeList(user)
-
-        list.then((value) => {
-            rootContent.append(value)
-        }).catch((error) => {
-            alert(error)
-        }) */
+        getRecipes();
     })
 }
 
+const renderMyRecipes = function(recipes) {
+  const rootContent = $('div#root-content')
+  recipes.forEach(rec => {
+      let calories = Math.round(rec.calories)
+      let dietType = rec.dietLabels
+      let recipeImage = rec.image
+      let recipeName = rec.label
+      let healthLabel = rec.healthLabels
+      let serving = rec.yield
 
-
-/* async function createRecipeList(user) {
-  await $.ajax("http://localhost:3000/" + user + "/data", {
-    type: "GET",
+        const results = `<div class="container searchResult">
+                            <div class="card">
+                               <div class="card-image">
+                                <div class="content">
+                                    <br>
+                                    <figure class="image is-128x128">
+                                      <img src="${recipeImage}" alt="Placeholder image">
+                                    </figure>
+                                </div>
+                              </div>
+                            <div class="card-content">
+                                <div class="content">
+                                  <p>${recipeName}</p>
+                                  <p>Calories: ${calories}</p>
+                                  <p>Serving: ${serving}</p>
+                                  <p>Diet: ${dietType}</p>
+                                  <p>Health Label: ${healthLabel}</p>
+                                  <button class="button is-danger deletebtn">Save</button>
+                                  <button class="button infoButton">More Information</button>
+                                  <button class="button is-warning notes">Personal Notes</button>
+                                </div>
+                              </div>
+                            </div>                         
+                        </div>`
+        
+        rootContent.append(results)
   })
-} */
+  infoButtonOnClick(response);
+}
+
+async function getRecipes() {
+  let user = await getCurrentUser()
+  await $.ajax(location.origin+"/user/"+user.id+"/data", {
+    type: "GET",
+    success: function(response) {
+      renderMyRecipes(response.recipes)
+    }
+  })
+}
 
 async function logOutOnClick() {
   await $.ajax(location.origin+"/logout", {
