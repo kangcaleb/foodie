@@ -199,8 +199,11 @@ const configNav = () => {
 
     const about = $('a#about')
     about.on('click', () => {
-        // TODO implement about page
-        alert('about')
+        if (Math.random()<=0.33) {
+            window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstleyVEVO'
+        } else {
+            alert('about')
+        }
     })
 
     const myRecipes = $('a#my-recipes')
