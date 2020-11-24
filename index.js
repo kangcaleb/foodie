@@ -191,10 +191,10 @@ app.put('/user/:id', (req, res) => {
     const password = req.body.password
     const newPassword = req.body.newPassword
 
-    if (userData.has(id)) {
+    if (User.getUser(id) != null) {
 
         if (verifyCredentials(email, password) == 1) {
-            userData.set(id, {
+            User.setUserData(id, {
                 id: id,
                 email: newEmail,
                 password: newPassword
