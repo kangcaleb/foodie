@@ -202,7 +202,7 @@ app.put('/user/:id', (req, res) => {
             userData.set(id, {
                 id: id,
                 email: newEmail,
-                pasword: newPassword
+                password: newPassword
             })
 
             res.json(userData.get(id))
