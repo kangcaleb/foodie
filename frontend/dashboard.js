@@ -21,46 +21,61 @@ $(async function () {
 
     configSearch()
     configNav()
+    myAccountOnClick()
+    verifyOnClick()
 })
 
 const $root = $('#root');
 
 const createNavbar = () => {
-    const nav = `<nav class="navbar has-background-white-ter" role="navigation" aria-label="main navigation">
-                      <div class="navbar-brand">
-                        <a class="navbar-item" href="./dashboard.html">
-                          <img src="../logo.png" width="28" height="28">
-                        </a>
-                    
-                        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-                          <span aria-hidden="true"></span>
-                          <span aria-hidden="true"></span>
-                          <span aria-hidden="true"></span>
-                        </a>
-                      </div>
+    const nav = `<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="./dashboard.html">
+      <img src="../logo.png" width="30" height="30">
+    </a>
 
-                      <div id="navbarBasicExample" class="navbar-menu">
-                        <div class="navbar-start">
-                          <a class="navbar-item" id="about">
-                            About
-                          </a>
-                    
-                          <a class="navbar-item" id="my-recipes">
-                            My Recipes
-                          </a>
-                        </div>
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
 
-                        <div class="navbar-end">
-                          <div class="navbar-item">
-                            <div class="buttons">
-                              <a class="button is-danger" id="sign-out">
-                                <strong>Sign Out</strong>
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                  </nav>`
+  <div id="navbarBasicExample" class="navbar-menu">
+    <div class="navbar-start">
+      <a class="navbar-item" id="about">
+        About
+      </a>
+      <a class="navbar-item" id="my-recipes">
+        My Recipes
+      </a>
+      
+    </div>
+
+    <div class="navbar-end">
+      <div class="navbar-item">
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          Setting
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item myAccount">
+            My Account
+          </a>               
+        </div>
+      </div>    
+      
+        <div class="buttons">        
+          <a class="button is-danger" id="sign-out">
+            <strong>Sign out</strong>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+      `
+
     return nav
 }
 
@@ -174,6 +189,13 @@ async function saveRecipe(recipe) {
     })
 }
 
+const myAccountOnClick = () => {
+    $root.on('click','.myAccount',function(){
+        //renderEditForm()
+        renderEditForm()
+    })
+}
+
 const renderInformationModal = (response, recipe) => {
 
     /** find ingredients and nutrient info from response given a recipe name */
@@ -207,6 +229,83 @@ const renderInformationModal = (response, recipe) => {
         <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>        
 `
     $root.append(infoModal)
+}
+
+const renderEditForm = () => {
+    let editModal = document.createElement('div');
+    editModal.setAttribute('class','modal is-active');
+    editModal.innerHTML = `
+        <div class="modal-background"></div>
+              <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Edit User Information</p>
+                </header>
+            <section class="modal-card-body">
+                <form class="box">
+                    <div class="field">
+                    <label class="label">Current Email</label>
+                       <p class="control has-icons-left has-icons-right">                                        
+                          <input class="input" id="currentUserEmail" type="email" placeholder="Current Email">
+                            <span class="icon is-small is-left">
+                               <i class="fas fa-at"></i>    
+                            </span>
+                       </p>                     
+                     </div>
+                     <div class="field">
+                       <label class="label">Current Password</label>
+                         <p class="control has-icons-left">
+                           <input class="input" id="currentUserPassword" type="password" placeholder="Current Password">
+                             <span class="icon is-small is-left">
+                               <i class="fas fa-lock"></i>
+                             </span>
+                         </p>                       
+                       </div>
+                     <div class="field">
+                    <label class="label">New Email</label>
+                       <p class="control has-icons-left has-icons-right">                                        
+                          <input class="input" id="newUserEmail" type="email" placeholder="New Email?">
+                            <span class="icon is-small is-left">
+                               <i class="fas fa-at"></i>    
+                            </span>
+                       </p>                     
+                     </div>
+                     <div class="field">
+                       <label class="label">New Password</label>
+                         <p class="control has-icons-left">
+                           <input class="input" id="newUserPassword" type="password" placeholder="New Password?">
+                             <span class="icon is-small is-left">
+                               <i class="fas fa-lock"></i>
+                             </span>
+                         </p>                       
+                       </div>                                         
+                </form>
+                <div class="field">
+                   <div class="control">
+                        <p id="verificationMessage"></p>
+                   </div>
+                </div>
+               </section>
+        <footer class="modal-card-foot">
+        <button class="button is-danger updateCredentialButton" >Update Credentials!</button>
+        <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>        
+`
+    $root.append(editModal)
+}
+
+const verifyOnClick = () => {
+
+    let email = ''
+    let password = ''
+    let ne = ''
+    let np = ''
+
+    $root.on('click','.updateCredentialButton', function(){
+        email = $('input#currentUserEmail').val()
+        password = $('input#currentUserPassword').val()
+        ne = $('input#newUserEmail').val()
+        np = $('input#newUserPassword').val()
+        verificationRequest(email,password,ne,np)
+    })
 }
 
 const configNav = () => {
@@ -292,4 +391,22 @@ async function logOutOnClick() {
       window.location.href = "../index.html";
     }, 1000);
   })
+}
+
+async function verificationRequest(email,password,newEmail,newPassword){
+    const currentUser = await getCurrentUser()
+    const $verificationMessage = $('#verificationMessage')
+    await $.ajax(location.origin+"/user/"+currentUser.id,{
+        type: "PUT",
+        data: {
+            "email": email,
+            "password": password,
+            "newEmail": newEmail,
+            "newPassword": newPassword
+        }
+    }).then(() => {
+        $verificationMessage.html('<span class="has-text-success">Credentials updated successfully</span>');
+    }).catch(() => {
+        $verificationMessage.html('<span class="has-text-danger">Invalid current email/password</span>');
+    })
 }

@@ -139,7 +139,6 @@ app.get('/user/:id/data', (req, res) => {
 
 app.post('/user/:id/recipe', (req, res) => {
 
-    console.log(req);
     const id = req.params.id
     const recipe = req.body.recipe
 
@@ -197,6 +196,7 @@ app.get('/', (req, res) => {
 
 app.put('/user/:id', (req, res) => {
     const id = req.params.id
+    const email = req.body.email
     const newEmail = req.body.newEmail
     const password = req.body.password
     const newPassword = req.body.newPassword
@@ -210,7 +210,7 @@ app.put('/user/:id', (req, res) => {
                 password: newPassword
             })
 
-            res.json(userData.get(id))
+            res.json(User.getUser(id))
         } else {
             res.status(404).send("invalid credentials")
         }
