@@ -2,15 +2,343 @@
   "0": {
     "id": 0,
     "recipes": [
-      "http://www.edamam.com/ontologies/edamam.owl#recipe_c81fe22fb2ac968f5c5a75a3d69b4fa0",
-      "http://www.edamam.com/ontologies/edamam.owl#recipe_11107502459178d8076eebbdeeb71119",
-      "http://www.edamam.com/ontologies/edamam.owl#recipe_86fb91db1dc04ebd4cd2629490d6b59f"
+      {
+        "uri": "http://www.edamam.com/ontologies/edamam.owl#recipe_11107502459178d8076eebbdeeb71119",
+        "label": "Hattie B's Hot Chicken From 'Fried & True'",
+        "image": "https://www.edamam.com/web-img/e52/e52769aea32a6663c2786629b89f5cb0.jpg",
+        "source": "Serious Eats",
+        "url": "http://www.seriouseats.com/recipes/2014/09/hattie-bs-hot-chicken-from-fried-true.html",
+        "shareAs": "http://www.edamam.com/recipe/hattie-b-s-hot-chicken-from-fried-true-11107502459178d8076eebbdeeb71119/hot+chicken",
+        "yield": 4.0,
+        "dietLabels": [
+          "Low-Carb"
+        ],
+        "healthLabels": [
+          "Peanut-Free",
+          "Tree-Nut-Free",
+          "Alcohol-Free"
+        ],
+        "cautions": [
+          "Sulfites"
+        ],
+        "ingredientLines": [
+          "For the Dry Brine",
+          "1 whole chicken (3 pounds), washed, patted dry, and cut into quarters",
+          "1 tablespoon kosher salt",
+          "1 1/2 teaspoons freshly ground black pepper",
+          "For the Dip",
+          "1 cup whole milk",
+          "2 large eggs",
+          "1 tablespoon Louisiana-style hot sauce",
+          "For the Dredge",
+          "2 cups all-purpose flour",
+          "2 teaspoons sea salt",
+          "Vegetable oil, for frying",
+          "For the Spicy Coating",
+          "1/2 cup lard, melted and heated (or hot frying oil)",
+          "3 tablespoons cayenne pepper",
+          "1 tablespoon (packed) light brown sugar",
+          "1 teaspoon freshly ground black pepper",
+          "3/4 teaspoon sea salt",
+          "1/2 teaspoon paprika",
+          "1/2 teaspoon garlic powder"
+        ],
+        "ingredients": [
+          {
+            "text": "1 whole chicken (3 pounds), washed, patted dry, and cut into quarters",
+            "weight": 1360.77711,
+            "image": "https://www.edamam.com/food-img/d33/d338229d774a743f7858f6764e095878.jpg"
+          },
+          {
+            "text": "1 tablespoon kosher salt",
+            "weight": 14.562499999753793,
+            "image": "https://www.edamam.com/food-img/694/6943ea510918c6025795e8dc6e6eaaeb.jpg"
+          },
+          {
+            "text": "1 1/2 teaspoons freshly ground black pepper",
+            "weight": 3.4499999999999997,
+            "image": "https://www.edamam.com/food-img/c6e/c6e5c3bd8d3bc15175d9766971a4d1b2.jpg"
+          },
+          {
+            "text": "1 cup whole milk",
+            "weight": 244.0,
+            "image": "https://www.edamam.com/food-img/7c9/7c9962acf83654a8d98ea6a2ade93735.jpg"
+          },
+          {
+            "text": "2 large eggs",
+            "weight": 100.0,
+            "image": "https://www.edamam.com/food-img/a7e/a7ec7c337cb47c6550b3b118e357f077.jpg"
+          },
+          {
+            "text": "1 tablespoon Louisiana-style hot sauce",
+            "weight": 14.099999999046444,
+            "image": "https://www.edamam.com/food-img/946/946c38a4c278da4361d2615d653d685a.jpg"
+          },
+          {
+            "text": "2 cups all-purpose flour",
+            "weight": 250.0,
+            "image": "https://www.edamam.com/food-img/368/368077bbcab62f862a8c766a56ea5dd1.jpg"
+          },
+          {
+            "text": "2 teaspoons sea salt",
+            "weight": 9.70833333382575,
+            "image": "https://www.edamam.com/food-img/694/6943ea510918c6025795e8dc6e6eaaeb.jpg"
+          },
+          {
+            "text": "Vegetable oil, for frying",
+            "weight": 29.068484529323072,
+            "image": "https://www.edamam.com/food-img/6e5/6e51a63a6300a8ea1b4c4cc68dfaba33.jpg"
+          },
+          {
+            "text": "1/2 cup lard, melted and heated (or hot frying oil)",
+            "weight": 102.5,
+            "image": "https://www.edamam.com/food-img/bc2/bc208be87a2eb48178d8a55ee5fd8e7d.jpg"
+          },
+          {
+            "text": "3 tablespoons cayenne pepper",
+            "weight": 15.899999999999999,
+            "image": "https://www.edamam.com/food-img/374/3742b9434a0fb66a45e0dd6d227ba669.jpg"
+          },
+          {
+            "text": "1 tablespoon (packed) light brown sugar",
+            "weight": 13.74999999976753,
+            "image": "https://www.edamam.com/food-img/8c6/8c6662bd73900645c6385b51a95d9b03.jpg"
+          },
+          {
+            "text": "1 teaspoon freshly ground black pepper",
+            "weight": 2.3,
+            "image": "https://www.edamam.com/food-img/c6e/c6e5c3bd8d3bc15175d9766971a4d1b2.jpg"
+          },
+          {
+            "text": "3/4 teaspoon sea salt",
+            "weight": 3.6406250001846567,
+            "image": "https://www.edamam.com/food-img/694/6943ea510918c6025795e8dc6e6eaaeb.jpg"
+          },
+          {
+            "text": "1/2 teaspoon paprika",
+            "weight": 1.15,
+            "image": "https://www.edamam.com/food-img/474/474d63763b9d8b9da98c5f43a114648c.jpg"
+          },
+          {
+            "text": "1/2 teaspoon garlic powder",
+            "weight": 1.55,
+            "image": "https://www.edamam.com/food-img/5c3/5c3db1d5a1a16b1f0a74796f74dd5985.jpg"
+          }
+        ],
+        "calories": 6035.1773764280115,
+        "totalWeight": 2322.7713223491924,
+        "totalTime": 1080.0
+      },
+
+      {
+        "uri": "http://www.edamam.com/ontologies/edamam.owl#recipe_c81fe22fb2ac968f5c5a75a3d69b4fa0",
+      "label": "Chicken Tacos",
+      "image": "https://www.edamam.com/web-img/69e/69eef08e2724dac54940c08c7400b091.jpg",
+      "source": "Martha Stewart",
+      "url": "http://www.marthastewart.com/1080398/chicken-tacos",
+      "shareAs": "http://www.edamam.com/recipe/chicken-tacos-c81fe22fb2ac968f5c5a75a3d69b4fa0/chicken+tacos",
+      "yield": 10.0,
+      "dietLabels": [],
+      "healthLabels": [
+        "Sugar-Conscious",
+        "Peanut-Free",
+        "Tree-Nut-Free",
+        "Alcohol-Free"
+      ],
+      "cautions": [
+        "Eggs",
+        "Milk",
+        "Sulfites"
+      ],
+      "ingredientLines": [
+        "4 Breaded Chicken Cutlets",
+        "8 toasted tortillas",
+        "2 avocados, mashed",
+        "8 tablespoons pico de gallo",
+        "Cilantro leaves"
+      ],
+      "ingredients": [
+        {
+          "text": "4 Breaded Chicken Cutlets",
+          "weight": 696.0,
+          "image": "https://www.edamam.com/food-img/093/093749f4c93e448119fc81976d2c3067.jpg"
+        },
+        {
+          "text": "8 toasted tortillas",
+          "weight": 192.0,
+          "image": "https://www.edamam.com/food-img/b8a/b8ad23dcc06f2324f944e47eb579d644.jpg"
+        },
+        {
+          "text": "2 avocados, mashed",
+          "weight": 402.0,
+          "image": "https://www.edamam.com/food-img/984/984a707ea8e9c6bf5f6498970a9e6d9d.jpg"
+        },
+        {
+          "text": "8 tablespoons pico de gallo",
+          "weight": 128.0,
+          "image": null
+        },
+        {
+          "text": "Cilantro leaves",
+          "weight": 14.18,
+          "image": "https://www.edamam.com/food-img/d57/d57e375b6ff99a90c7ee2b1990a1af36.jpg"
+        }
+      ],
+      "calories": 2301.8214,
+      "totalWeight": 1432.18,
+      "totalTime": 5.0
+      }
     ]
   },
   "1": {
     "id": 1,
     "recipes": [
-      "http://www.edamam.com/ontologies/edamam.owl#recipe_86fb91db1dc04ebd4cd2629490d6b59f"
+      {
+        "uri": "http://www.edamam.com/ontologies/edamam.owl#recipe_6c6b5baf220ceb5b25b7c9695f91046e",
+        "label": "Crisp Tacos Picadillo",
+        "image": "https://www.edamam.com/web-img/32d/32da8c201c42d8aae7a7f51449c83e2a.jpg",
+        "source": "Lottie + Doof",
+        "url": "http://www.lottieanddoof.com/2009/07/picadillo/",
+        "shareAs": "http://www.edamam.com/recipe/crisp-tacos-picadillo-6c6b5baf220ceb5b25b7c9695f91046e/tacos",
+        "yield": 14.0,
+        "dietLabels": [],
+        "healthLabels": [
+          "Peanut-Free",
+          "Tree-Nut-Free",
+          "Alcohol-Free"
+        ],
+        "cautions": [
+          "Eggs",
+          "Milk",
+          "Sulfites"
+        ],
+        "ingredientLines": [
+          "2 tsp Vegetable Oil (picadillo)",
+          "1/2 x white onion (large), chopped (1 1/2 cups) (picadillo)",
+          "1 lb Ground Chuck (80 percent lean) (picadillo)",
+          "1 tbsp minced garlic cloves(1 to 2 cloves) (picadillo)",
+          "2 x tomatoes (medium), diced (2 3/4 cups) (picadillo)",
+          "1 1/2 tsp Paprika (picadillo)",
+          "1 tsp ancho chile powder (picadillo)",
+          "1 tsp Dried Oregano (picadillo)",
+          "1 tsp coarse salt (picadillo)",
+          "1 tsp freshly ground pepper (picadillo)",
+          "3/4 tsp Ground Cumin (picadillo)",
+          "1 1/2 cup water (picadillo)",
+          "3 tsp White Vinegar (picadillo)",
+          "vegetable oil for frying (tacos)",
+          "20 x Corn Tortillas (tacos)",
+          "Iceberg Lettuce Shredded,for serving (tacos)",
+          "white onion shredded,for serving (tacos)",
+          "shredded cheddar cheese (tacos)",
+          "salsa Picante, for serving (tacos)"
+        ],
+        "ingredients": [
+          {
+            "text": "2 tsp Vegetable Oil (picadillo)",
+            "weight": 9.333333333964529,
+            "image": "https://www.edamam.com/food-img/6e5/6e51a63a6300a8ea1b4c4cc68dfaba33.jpg"
+          },
+          {
+            "text": "1/2 x white onion (large), chopped (1 1/2 cups) (picadillo)",
+            "weight": 240.0,
+            "image": "https://www.edamam.com/food-img/205/205e6bf2399b85d34741892ef91cc603.jpg"
+          },
+          {
+            "text": "1 lb Ground Chuck (80 percent lean) (picadillo)",
+            "weight": 453.59237,
+            "image": "https://www.edamam.com/food-img/bab/bab88ab3ea40d34e4c8ae35d6b30344a.jpg"
+          },
+          {
+            "text": "1 tbsp minced garlic cloves(1 to 2 cloves) (picadillo)",
+            "weight": 4.5,
+            "image": "https://www.edamam.com/food-img/6ee/6ee142951f48aaf94f4312409f8d133d.jpg"
+          },
+          {
+            "text": "2 x tomatoes (medium), diced (2 3/4 cups) (picadillo)",
+            "weight": 409.75,
+            "image": "https://www.edamam.com/food-img/23e/23e727a14f1035bdc2733bb0477efbd2.jpg"
+          },
+          {
+            "text": "1 1/2 tsp Paprika (picadillo)",
+            "weight": 3.4499999999999997,
+            "image": "https://www.edamam.com/food-img/474/474d63763b9d8b9da98c5f43a114648c.jpg"
+          },
+          {
+            "text": "1 tsp ancho chile powder (picadillo)",
+            "weight": 2.7,
+            "image": "https://www.edamam.com/food-img/e6f/e6f19043caefc23b5feda5520076617e.jpg"
+          },
+          {
+            "text": "1 tsp Dried Oregano (picadillo)",
+            "weight": 1.0,
+            "image": "https://www.edamam.com/food-img/1b0/1b0eaffb1c261606e0d82fed8e9747a7.jpg"
+          },
+          {
+            "text": "1 tsp coarse salt (picadillo)",
+            "weight": 4.854166666912875,
+            "image": "https://www.edamam.com/food-img/694/6943ea510918c6025795e8dc6e6eaaeb.jpg"
+          },
+          {
+            "text": "1 tsp freshly ground pepper (picadillo)",
+            "weight": 2.9,
+            "image": "https://www.edamam.com/food-img/c6e/c6e5c3bd8d3bc15175d9766971a4d1b2.jpg"
+          },
+          {
+            "text": "3/4 tsp Ground Cumin (picadillo)",
+            "weight": 1.5750000000000002,
+            "image": "https://www.edamam.com/food-img/07e/07e2a4eb77ce46591033846504817d35.jpg"
+          },
+          {
+            "text": "1 1/2 cup water (picadillo)",
+            "weight": 355.5,
+            "image": "https://www.edamam.com/food-img/5dd/5dd9d1361847b2ca53c4b19a8f92627e.jpg"
+          },
+          {
+            "text": "3 tsp White Vinegar (picadillo)",
+            "weight": 15.0,
+            "image": "https://www.edamam.com/food-img/5f6/5f69b84c399d778c4728e9ab4f8065a2.jpg"
+          },
+          {
+            "text": "vegetable oil for frying (tacos)",
+            "weight": 30.398106232011937,
+            "image": "https://www.edamam.com/food-img/6e5/6e51a63a6300a8ea1b4c4cc68dfaba33.jpg"
+          },
+          {
+            "text": "20 x Corn Tortillas (tacos)",
+            "weight": 480.0,
+            "image": "https://www.edamam.com/food-img/b8a/b8ad23dcc06f2324f944e47eb579d644.jpg"
+          },
+          {
+            "text": "Iceberg Lettuce Shredded,for serving (tacos)",
+            "weight": 89.0,
+            "image": "https://www.edamam.com/food-img/3c0/3c00c5ba27678b2f8e1c58b342bd98c7.jpg"
+          },
+          {
+            "text": "white onion shredded,for serving (tacos)",
+            "weight": 32.0,
+            "image": "https://www.edamam.com/food-img/205/205e6bf2399b85d34741892ef91cc603.jpg"
+          },
+          {
+            "text": "shredded cheddar cheese (tacos)",
+            "weight": 0.0,
+            "image": null
+          },
+          {
+            "text": "shredded cheddar cheese (tacos)",
+            "weight": 0.0,
+            "image": "https://www.edamam.com/food-img/def/def506222dc404affdfbf7b7133a34c6.jpg"
+          },
+          {
+            "text": "salsa Picante, for serving (tacos)",
+            "weight": 130.0,
+            "image": "https://www.edamam.com/food-img/995/995d0f166754a0475c181b9c156fec43.jpg"
+          }
+        ],
+        "calories": 4457.683405292573,
+        "totalWeight": 2515.703100500915,
+        "totalTime": 0.0
+      }
     ]
   }
 }
