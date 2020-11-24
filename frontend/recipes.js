@@ -3,13 +3,12 @@ const createRecipeList = async () => {
 
     const userObj = await getCurrentUser()
 
-    const result = await requestRecipes(userObj.id) // TODO make this line get the current user not just the user at 0
+    const result = await requestRecipes(userObj.id)
     const recipes = result.recipes
 
     for (let i=0; i<recipes.length; i++) {
-        const recipeUri = recipes[i]
-        const recipe = await requestRecipeSearch('r', recipeUri)
-        const recipeCard = createRecipeCard(recipe[0])
+        const recipeObj = recipes[i]
+        const recipeCard = createRecipeCard(recipeObj)
         list.append(recipeCard)
     }
 
