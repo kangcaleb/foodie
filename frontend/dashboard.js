@@ -163,8 +163,9 @@ const renderSearchResults = (response) => {
 
 const infoButtonOnClick = (response) => {
     $root.on('click','.infoButton',function () {
-        let recipe = event.target.parentNode.children[0].textContent;
-        renderInformationModal(response, recipe)
+        let recipe_name = event.target.parentNode.children[0].textContent;
+        let recipe = response.hits.find(x => x.recipe.label == recipe_name).recipe;
+        renderInformationModal(recipe)
     })
 }
 
@@ -196,17 +197,17 @@ const myAccountOnClick = () => {
     })
 }
 
-const renderInformationModal = (response, recipe) => {
+const renderInformationModal = (recipe) => {
 
     /** find ingredients and nutrient info from response given a recipe name */
-    let cur = response.hits.find(x => x.recipe.label == recipe);
-
-    let ingredients = cur.recipe.ingredients;
-    let url = cur.recipe.url;
+    console.log(recipe)
+    let ingredients = recipe.ingredientLines
+    console.log(ingredients[0])
+    let url = recipe.url;
 
     let ingredList = ""
-    ingredients.forEach(ing => {
-      ingredList += `<p>-` + String(Object.values(ing)).split(',')[0] + `</p>`
+    ingredients.forEach(line => {
+      ingredList += `<p>-` + line + `</p>`
     })
 
 
@@ -360,9 +361,9 @@ const renderMyRecipes = function(recipes) {
                                   <p>Serving: ${serving}</p>
                                   <p>Diet: ${dietType}</p>
                                   <p>Health Label: ${healthLabel}</p>
-                                  <button class="button is-danger deletebtn">Delete</button>
-                                  <button class="button infoButton">More Information</button>
-                                  <button class="button is-warning notes">Personal Notes</button>
+                                  <button class="button is-danger deleteButton">Delete</button>
+                                  <button class="button myinfoButton">More Information</button>
+                                  <button class="button is-warning notesButton">Personal Notes</button>
                                 </div>
                               </div>
                             </div>                         
@@ -370,7 +371,38 @@ const renderMyRecipes = function(recipes) {
         
         rootContent.append(results)
   })
-  infoButtonOnClick(response);
+  deleteButtonOnClick(recipes)
+  myInfoButtonOnClick(recipes)
+  notesButtonOnClick(recipes)
+}
+
+const deleteButtonOnClick = function(recipes) {
+  $root.on('click', '.deleteButton', function() {
+    event.target.parentNode.append(`Recipe Deleted!`);
+    let recipe_name = event.target.parentNode.children[0].textContent;
+    let recipe = recipes.find(x => x.label == recipe_name);
+    deleteRecipe(recipe);
+  })
+}
+
+async function deleteRecipe(recipe) {
+  let user = await getCurrentUser();
+  let response = await $.ajax(location.origin+"/user/"+user.id+"/recipe", {
+    type: "DELETE",
+    dataType: "JSON",
+    data: {
+        "recipe": recipe,
+    }}).catch((error) => {
+      alert(error)
+    })
+}
+
+const myInfoButtonOnClick = function(recipes){
+  $root.on('click','.myinfoButton',function () {
+      let recipe_name = event.target.parentNode.children[0].textContent;
+      let recipe = recipes.find(x => x.label == recipe_name);
+      renderInformationModal(recipe)
+  })
 }
 
 async function getRecipes() {
