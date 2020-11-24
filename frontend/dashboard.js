@@ -227,8 +227,7 @@ const renderInformationModal = (recipe) => {
                 </form>
                </section>
         <footer class="modal-card-foot">
-        <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>        
-`
+        <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>`
     $root.append(infoModal)
 }
 
@@ -336,6 +335,16 @@ const configNav = () => {
 
 const renderMyRecipes = function(recipes) {
   const rootContent = $('div#root-content')
+  if (recipes.length == 0) {
+    rootContent.append(`<div class="container searchResult">
+                          <br><br>
+                          <div class="card">
+                            <p class="is-size-2 has-text-centered"> Search for your own Recipes to save! </p>
+                          </div>
+                        </div>` 
+    )
+  }
+
   recipes.forEach(rec => {
       let calories = Math.round(rec.calories)
       let dietType = rec.dietLabels
@@ -413,6 +422,39 @@ async function getRecipes() {
       renderMyRecipes(response.recipes)
     }
   })
+}
+
+const notesButtonOnClick = function(){
+  $root.on('click', '.notesButton', function() {
+    let recipe = event.target.parentNode.children[0].textContent;
+    renderNotesModal(recipe);
+  })
+}
+
+const renderNotesModal = function(recipe){
+
+  if(document.getElementById(recipe) == null) {
+    let notesModal = document.createElement('div');
+    notesModal.setAttribute('class','modal is-active');
+    notesModal.setAttribute('id', recipe)
+    notesModal.innerHTML = `
+        <div class="modal-background"></div>
+              <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Ingredient and Source Info</p>
+                </header>
+            <section class="modal-card-body">
+                <form class="box">
+                  <p class="pnotes is-size-5" contenteditable="true"> Edit Me to Add Your Personal Recipe Notes! </p>                                             
+                </form>
+            </section>
+        <footer class="modal-card-foot">
+        <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>`
+    $root.append(notesModal)
+  } else {
+    let noteModals = document.getElementById(recipe);
+    noteModals.setAttribute('class', 'modal is-active')
+  }
 }
 
 async function logOutOnClick() {
