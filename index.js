@@ -192,13 +192,11 @@ app.get('/', (req, res) => {
 
 app.put('/user/:id', (req, res) => {
     const id = req.params.id
-    const email = req.body.email
     const newEmail = req.body.newEmail
     const password = req.body.password
     const newPassword = req.body.newPassword
 
     if (userData.has(id)) {
-        const data = userData.get(id)
 
         if (verifyCredentials(email, password) == 1) {
             userData.set(id, {
