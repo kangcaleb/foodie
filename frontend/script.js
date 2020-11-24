@@ -48,9 +48,6 @@ const renderLoginForm = function (){
                                                 </div>
                                             </div>                                    
                                         <div class="field">
-                                                <a href="#">Forgot Password?</a>                                                             
-                                        </div>                                                                      
-                                        <div class="field">
                                           <p class="control">
                                             <button type="button" class="button is-rounded is-success loginButton">
                                               Login
