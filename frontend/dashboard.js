@@ -43,7 +43,7 @@ const createNavbar = () => {
 
   <div id="navbarBasicExample" class="navbar-menu">
     <div class="navbar-start">
-      <a class="navbar-item">
+      <a class="navbar-item" id="about">
         About
       </a>
       <a class="navbar-item" id="my-recipes">
