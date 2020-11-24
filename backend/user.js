@@ -46,4 +46,8 @@ User.getUserData = (id) => {
     return userData.get(id)
 }
 
+User.setUserData = (id, data) => {
+    accountData.set(id, data)
+}
+
 module.exports = User

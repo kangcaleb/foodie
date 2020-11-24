@@ -53,5 +53,10 @@
     "id": 19,
     "email": "123@123.com",
     "password": "123456"
+  },
+  "20": {
+    "id": 20,
+    "email": "thecalbear21@gmail.com",
+    "password": "goheels"
   }
 }
