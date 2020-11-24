@@ -20,46 +20,60 @@ $(async function () {
 
     configSearch()
     configNav()
+    myAccountOnClick()
 })
 
 const $root = $('#root');
 
 const createNavbar = () => {
-    const nav = `<nav class="navbar has-background-white-ter" role="navigation" aria-label="main navigation">
-                      <div class="navbar-brand">
-                        <a class="navbar-item" href="./dashboard.html">
-                          <img src="../logo.png" width="28" height="28">
-                        </a>
-                    
-                        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-                          <span aria-hidden="true"></span>
-                          <span aria-hidden="true"></span>
-                          <span aria-hidden="true"></span>
-                        </a>
-                      </div>
+    const nav = `<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a class="navbar-item" href="./dashboard.html">
+      <img src="../logo.png" width="30" height="30">
+    </a>
 
-                      <div id="navbarBasicExample" class="navbar-menu">
-                        <div class="navbar-start">
-                          <a class="navbar-item" id="about">
-                            About
-                          </a>
-                    
-                          <a class="navbar-item" id="my-recipes">
-                            My Recipes
-                          </a>
-                        </div>
+    <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
 
-                        <div class="navbar-end">
-                          <div class="navbar-item">
-                            <div class="buttons">
-                              <a class="button is-danger" id="sign-out">
-                                <strong>Sign Out</strong>
-                              </a>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                  </nav>`
+  <div id="navbarBasicExample" class="navbar-menu">
+    <div class="navbar-start">
+      <a class="navbar-item">
+        About
+      </a>
+      <a class="navbar-item" id="my-recipes">
+        My Recipes
+      </a>
+      
+    </div>
+
+    <div class="navbar-end">
+      <div class="navbar-item">
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          Setting
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item myAccount">
+            My Account
+          </a>               
+        </div>
+      </div>    
+      
+        <div class="buttons">        
+          <a class="button is-danger" id="sign-out">
+            <strong>Sign out</strong>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+      `
+
     return nav
 }
 
@@ -154,6 +168,12 @@ const saveButtonOnClick = () => {
 
 }
 
+const myAccountOnClick = () => {
+    $root.on('click','.myAccount',function(){
+        renderEditForm()
+    })
+}
+
 const renderInformationModal = (response, recipe) => {
 
     /** find ingredients and nutrient info from response given a recipe name */
@@ -187,6 +207,59 @@ const renderInformationModal = (response, recipe) => {
         <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>        
 `
     $root.append(infoModal)
+}
+
+const renderEditForm = () => {
+    let editModal = document.createElement('div');
+    editModal.setAttribute('class','modal is-active');
+    editModal.innerHTML = `
+        <div class="modal-background"></div>
+              <div class="modal-card">
+                <header class="modal-card-head">
+                    <p class="modal-card-title">Edit User Information</p>
+                </header>
+            <section class="modal-card-body">
+                <form class="box">
+                    <div class="field">
+                    <label class="label">Email</label>
+                       <p class="control has-icons-left has-icons-right">                                        
+                          <input class="input" id="newUserEmail"  type="email" placeholder="New Email?">
+                            <span class="icon is-small is-left">
+                               <i class="fas fa-at"></i>    
+                            </span>
+                           <button class="button is-danger updateEmailButton">Update Email!</button> 
+                       </p>
+                       
+                     </div>
+                     <div class="field">
+                       <label class="label">Password</label>
+                         <p class="control has-icons-left">
+                           <input class="input" id="newUserPassword" type="input" placeholder="New Password?">
+                             <span class="icon is-small is-left">
+                               <i class="fas fa-lock"></i>
+                             </span>
+                             <button class="button is-danger updatePasswordButton" >Update Password!</button>
+                         </p>
+                         
+                       </div>                                         
+                </form>
+               </section>
+        <footer class="modal-card-foot">
+        <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>        
+`
+    $root.append(editModal)
+}
+
+const emailUpdateOnClick = () => {
+    $root.on('click','.updateEmailButton',function(){
+        alert('Update')
+    })
+}
+
+const passwordUpdateOnClick = () => {
+    $root.on('click','.updatePasswordButton',function(){
+        alert('Update')
+    })
 }
 
 const configNav = () => {
