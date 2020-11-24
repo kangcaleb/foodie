@@ -102,7 +102,7 @@ app.post('/user', (req, res) => {
         return
     }
 
-    res.setHeader("Access-Control-Allow-Origin", "*")
+    //res.setHeader("Access-Control-Allow-Origin", "*")
     res.json(user)
 })
 
@@ -144,24 +144,24 @@ app.post('/user/:id/recipe', (req, res) => {
 
     if (User.getUser(id) != null) {
 
-        const userdata = User.getUserData(id)
+        const userdata = userData.get(id)
 
         if (userdata == null) {
             userData.set(id.toString(), {
                 id: parseInt(id),
                 recipes: [recipe]
             })
-
+            userData.save()
             res.json(userData.get(id))
             return
         }
 
         // TODO Defensive Programing for valid recipe, if time
-        const user = User.getUserData(id)
-        user.recipes.push(recipe)
-        userData.set(user.id.toString(), user)
+
+        userdata.recipes.push(recipe)
+        userData.set(userdata.id.toString(), userdata)
         res.setHeader("Access-Control-Allow-Origin", "*")
-        res.json(user)
+        res.json(userdata)
     } else {
         res.status(404).send('no user')
     }

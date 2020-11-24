@@ -26,6 +26,7 @@ User.createUser = (name, password) => {
     let user = new User(id, name, password)
 
     accountData.set(id.toString(), user)
+    accountData.save()
     return user
 }
 
