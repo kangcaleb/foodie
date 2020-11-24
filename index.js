@@ -102,7 +102,7 @@ app.post('/user', (req, res) => {
         return
     }
 
-    res.setHeader("Access-Control-Allow-Origin", "*")
+    //res.setHeader("Access-Control-Allow-Origin", "*")
     res.json(user)
 })
 
@@ -144,14 +144,15 @@ app.post('/user/:id/recipe', (req, res) => {
 
     if (User.getUser(id) != null) {
 
-        const userdata = User.getUserData(id)
+        const userdata = userData.get(id)
 
         if (userdata == null) {
             userData.set(id.toString(), {
                 id: parseInt(id),
                 recipes: [recipe]
             })
-
+            userData.save()
+            console.log(userData.get(id))
             res.json(userData.get(id))
             return
         }
