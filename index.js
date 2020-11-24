@@ -139,7 +139,6 @@ app.get('/user/:id/data', (req, res) => {
 
 app.post('/user/:id/recipe', (req, res) => {
 
-    console.log(req);
     const id = req.params.id
     const recipe = req.body.recipe
 
