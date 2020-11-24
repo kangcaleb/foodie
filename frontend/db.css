@@ -4,6 +4,11 @@ html {
     background-repeat: repeat;
 }
 
+body {
+    background-image: url('dashboardbg.jpg');
+    background-size: 100%;
+}
+
 .navbar {
     opacity: 0.9;
 }

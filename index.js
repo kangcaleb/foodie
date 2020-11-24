@@ -144,8 +144,9 @@ app.get('/user/:id/data', (req, res) => {
 
 app.post('/user/:id/recipe', (req, res) => {
 
+    console.log(req);
     const id = req.params.id
-    const recipe = req.query.recipe
+    const recipe = req.body.recipe
 
     if (userData.has(id)) {
         const user = User.getUserData(id)

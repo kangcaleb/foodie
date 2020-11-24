@@ -26,7 +26,7 @@ $(async function () {
 const $root = $('#root');
 
 const createNavbar = () => {
-    const nav = `<nav class="navbar has-background-white-ter" id = ${window.sessionStorage.getItem('userID')} role="navigation" aria-label="main navigation">
+    const nav = `<nav class="navbar has-background-white-ter" role="navigation" aria-label="main navigation">
                       <div class="navbar-brand">
                         <a class="navbar-item" href="./dashboard.html">
                           <img src="../logo.png" width="28" height="28">
@@ -156,23 +156,23 @@ const infoButtonOnClick = (response) => {
 const saveButtonOnClick = (response) => {
   $root.on('click', '.saveButton', function() {
     event.target.parentNode.append(`Recipe Saved!`);
-    let user = document.getElementsByClassName("navbar")[0].id;
-    let recipe = event.target.parentNode.children[0].textContent;
-    let uri = response.hits.find(x=> x.recipe.label == recipe).recipe.uri;
-    saveRecipe(user, uri);
+    let recipe_name = event.target.parentNode.children[0].textContent;
+    let recipe = response.hits.find(x=> x.recipe.label == recipe_name).recipe;
+    saveRecipe(recipe);
   })
 }
 
-/*async function saveRecipe(user, uri) {
-    await $.ajax("http://localhost:3000/user/" + user + "/recipe", {
-        type = "POST",
-        datatype = "JSON",
-        data: {
-          "id":user,
-          "recipes":uri,
-        }
+async function saveRecipe(recipe) {
+  let user = await getCurrentUser();
+  let response = await $.ajax(location.origin+"/user/"+user.id+"/recipe", {
+    type: "POST",
+    dataType: "JSON",
+    data: {
+        "recipe": recipe,
+    }}).catch((error) => {
+      alert(error)
     })
-} */
+}
 
 const renderInformationModal = (response, recipe) => {
 
