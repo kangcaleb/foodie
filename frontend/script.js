@@ -138,21 +138,6 @@ const signUpOnClick = function() {
     })
 }
 
-/*async function getUserInfo(){
-    let response = await $.ajax("http://localhost:3000/users",{
-        type: "GET",
-        dataType: "json",
-    })
-    $root.append(JSON.stringify(response))
-}
-async function getUserID(){
-    let response = await $.ajax("http://localhost:3000/userids",{
-        type: "GET",
-        dataType: "json",
-    })
-    $root.append(JSON.stringify(response))
-}*/
-
 //User sign up request
 async function createUserLogin(email,password){
     let response = await $.ajax(location.origin+"/user", {

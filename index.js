@@ -114,7 +114,7 @@ app.post('/user', (req, res) => {
         if (err) {
             throw err
         }
-        console.log(result)
+        res.send(result)
     })
 })
 
