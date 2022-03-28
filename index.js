@@ -22,6 +22,18 @@ app.use(expressSession({
     cookie: {secure: false}
 }))
 
+/** Here we set up the POSTGRES Client*/
+const { Client } = require('pg');
+const client = new Client({
+    
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+client.connect();
+
 
 const User = require('./backend/user.js')
 
@@ -90,18 +102,20 @@ app.get('/login', (req, res) => {
 * */
 app.post('/user', (req, res) => {
 
-    const email = req.body.email
+    const name = req.body.email
     const password = req.body.password
 
-    let user = User.createUser(email, password)
-
-    if (user == null) {
+    if (name == null || password == null) {
         res.status(400).send('Fix request')
         return
     }
 
-    //res.setHeader("Access-Control-Allow-Origin", "*")
-    res.json(user)
+    client.query(`INSERT INTO USERS VALUES('${name}', '${password}')`, (err, result) => {
+        if (err) {
+            throw err
+        }
+        console.log(result)
+    })
 })
 
 /*
@@ -233,29 +247,6 @@ const verifyCredentials = (email, password) => {
         return 0
     }
 }
-
-
-
-
-const { Client } = require('pg');
-
-const client = new Client({
-    
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-
-client.connect();
-
-client.query("select * from Users", (err, res) => {
-  if (err) throw err;
-  for (let row of res.rows) {
-    console.log(JSON.stringify(row));
-  }
-  client.end();
-});
 
 const port = process.env.PORT || 3000
 app.listen(port, () => {
