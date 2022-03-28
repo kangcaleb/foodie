@@ -24,8 +24,6 @@ app.use(expressSession({
 
 
 const User = require('./backend/user.js')
-const userData = require('data-store')({ path: process.cwd() + '/data/user-data.json' })
-
 
 /*
 * Here are endpoints regarding login and user information.
@@ -235,6 +233,29 @@ const verifyCredentials = (email, password) => {
         return 0
     }
 }
+
+
+
+
+const { Client } = require('pg');
+
+const client = new Client({
+    
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
+
+client.connect();
+
+client.query('SELECT table_schema,table_name FROM information_schema.tables;', (err, res) => {
+  if (err) throw err;
+  for (let row of res.rows) {
+    console.log(JSON.stringify(row));
+  }
+  client.end();
+});
 
 const port = process.env.PORT || 3000
 app.listen(port, () => {
