@@ -112,9 +112,10 @@ app.post('/user', (req, res) => {
 
     client.query(`INSERT INTO USERS VALUES('${name}', '${password}')`, (err, result) => {
         if (err) {
-            throw err
+            res.status(500, "Internal Sever Error")
+        } else {
+            res.send(result)
         }
-        res.send(result)
     })
 })
 
