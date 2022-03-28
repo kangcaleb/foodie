@@ -249,7 +249,7 @@ const client = new Client({
 
 client.connect();
 
-client.query('SELECT table_schema,table_name FROM information_schema.tables;', (err, res) => {
+client.query("select * from Users", (err, res) => {
   if (err) throw err;
   for (let row of res.rows) {
     console.log(JSON.stringify(row));
@@ -261,7 +261,3 @@ const port = process.env.PORT || 3000
 app.listen(port, () => {
     console.log('app listening on port: ' + port)
 })
-
-
-
-
