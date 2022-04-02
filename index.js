@@ -68,19 +68,34 @@ app.post('/login', (req,res) => {
     let password = req.body.password;
 
     res.setHeader("Access-Control-Allow-Origin", "*")
-    const isVerified = verifyCredentials(name, password)
 
-    if (isVerified == -1) {
-        res.status(500).send('Error in getting user')
-        return
-    } else if (isVerified == 0) {
-        res.status(401).send('Credentials Invalid')
-    } else {
+    client.query(`select password from Users where Users.username='${name}'`, (err, result) => {
+        if (err) {
+            res.status(500).send('Error in getting user')
+        } else {
+            console.log(result)
+            const passwords = result.rows
 
-        req.session.user = name
-        res.json(name)
-        return
-    }
+            if (passwords) {
+                if (passwords.length > 1) {
+                    res.status(500).send('Error in getting user'); return
+                } else if (passwords.length == 0) {
+                    res.status(401).send('Credentials Invalid'); return
+                }
+
+                console.log(passwords[0].password)
+                console.log(password)
+                if (passwords[0].password === password) {
+                    req.session.user = name
+                    res.json(name)
+                } else {
+                    res.status(401).send('Credentials Invalid')
+                }
+            } else {
+                res.status(500).send('Error in getting user')
+            }
+        }
+    })
 })
 
 /*
@@ -237,17 +252,17 @@ app.put('/user/:id', (req, res) => {
 
 /**Used in login endpoint to verify the password for the username*/
 const verifyCredentials = (name, password) => {
-    client.query(`select password from Users where Users.username='${name}'`, (res, err) => {
+    client.query(`select password from Users where Users.username='${name}'`, (err, res) => {
         if (err) {
-            console.log(err)
             return -1
         } else {
             console.log(res)
-
-            const passwords = rows
+            const passwords = res.rows
             if (passwords) {
-                if (passwords.length == 0 || passwords.length > 1) {
+                if (passwords.length > 1) {
                     return -1
+                } else if (passwords.length == 0) {
+                    return 0
                 }
 
                 if (passwords[0].password === password) {
