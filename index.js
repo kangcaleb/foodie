@@ -107,6 +107,7 @@ app.get('/logout', (req, res) => {
     res.json(true)
 })
 
+// get the current user
 app.get('/login', (req, res) => {
     const user = req.session.user
     res.json(user)

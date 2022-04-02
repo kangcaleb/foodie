@@ -345,13 +345,17 @@ const renderMyRecipes = function(recipes) {
     )
   }
 
-  recipes.forEach(rec => {
-      let calories = Math.round(rec.calories)
-      let dietType = rec.dietLabels
-      let recipeImage = rec.image
-      let recipeName = rec.label
-      let healthLabel = rec.healthLabels
-      let serving = rec.yield
+  recipes.forEach(async (rec) => {
+
+      /**get recipe info here from 3rd party edam api */
+      const recipe = (await requestRecipeSpecific(rec.recipeid)).recipe
+
+      let calories = Math.round(recipe.calories)
+      let dietType = recipe.dietLabels
+      let recipeImage = recipe.image
+      let recipeName = recipe.label
+      let healthLabel = recipe.healthLabels
+      let serving = recipe.yield
 
         const results = `<div class="container searchResult">
                             <div class="card">
