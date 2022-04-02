@@ -250,33 +250,6 @@ app.put('/user/:id', (req, res) => {
 
 })
 
-/**Used in login endpoint to verify the password for the username*/
-const verifyCredentials = (name, password) => {
-    client.query(`select password from Users where Users.username='${name}'`, (err, res) => {
-        if (err) {
-            return -1
-        } else {
-            console.log(res)
-            const passwords = res.rows
-            if (passwords) {
-                if (passwords.length > 1) {
-                    return -1
-                } else if (passwords.length == 0) {
-                    return 0
-                }
-
-                if (passwords[0].password === password) {
-                    return 1
-                } else {
-                    return 0
-                }
-            } else {
-                return -1
-            }
-        }
-    })
-}
-
 const port = process.env.PORT || 3000
 app.listen(port, () => {
     console.log('app listening on port: ' + port)
