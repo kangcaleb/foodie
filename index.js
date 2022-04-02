@@ -64,23 +64,38 @@ app.get('/users', (req, res) => {
 * email and password respectively. content type for request must be form-url-encoded
 * */
 app.post('/login', (req,res) => {
-    let email = req.body.email;
+    let name = req.body.email;
     let password = req.body.password;
 
     res.setHeader("Access-Control-Allow-Origin", "*")
-    const isVerified = verifyCredentials(email, password)
 
-    if (isVerified == -1) {
-        res.status(400).send('No user found')
-        return
-    } else if (isVerified == 0) {
-        res.status(401).send('Credentials Invalid')
-    } else {
-        const user = User.getAllUsers().filter(account => account.email === email)[0]
-        req.session.user = user
-        res.json(user)
-        return
-    }
+    client.query(`select password from Users where Users.username='${name}'`, (err, result) => {
+        if (err) {
+            res.status(500).send('Error in getting user')
+        } else {
+            console.log(result)
+            const passwords = result.rows
+
+            if (passwords) {
+                if (passwords.length > 1) {
+                    res.status(500).send('Error in getting user'); return
+                } else if (passwords.length == 0) {
+                    res.status(401).send('Credentials Invalid'); return
+                }
+
+                console.log(passwords[0].password)
+                console.log(password)
+                if (passwords[0].password === password) {
+                    req.session.user = name
+                    res.json(name)
+                } else {
+                    res.status(401).send('Credentials Invalid')
+                }
+            } else {
+                res.status(500).send('Error in getting user')
+            }
+        }
+    })
 })
 
 /*
@@ -234,20 +249,6 @@ app.put('/user/:id', (req, res) => {
 
 
 })
-
-const verifyCredentials = (email, password) => {
-    let user = User.getAllUsers().filter(account => account.email === email)
-
-    if (user.length == 0) {
-        return -1;
-    }
-
-    if (user[0].password == password) {
-        return 1
-    } else {
-        return 0
-    }
-}
 
 const port = process.env.PORT || 3000
 app.listen(port, () => {
