@@ -64,21 +64,21 @@ app.get('/users', (req, res) => {
 * email and password respectively. content type for request must be form-url-encoded
 * */
 app.post('/login', (req,res) => {
-    let email = req.body.email;
+    let name = req.body.email;
     let password = req.body.password;
 
     res.setHeader("Access-Control-Allow-Origin", "*")
-    const isVerified = verifyCredentials(email, password)
+    const isVerified = verifyCredentials(name, password)
 
     if (isVerified == -1) {
-        res.status(400).send('No user found')
+        res.status(500).send('Error in getting user')
         return
     } else if (isVerified == 0) {
         res.status(401).send('Credentials Invalid')
     } else {
-        const user = User.getAllUsers().filter(account => account.email === email)[0]
-        req.session.user = user
-        res.json(user)
+
+        req.session.user = name
+        res.json(name)
         return
     }
 })
@@ -235,18 +235,31 @@ app.put('/user/:id', (req, res) => {
 
 })
 
-const verifyCredentials = (email, password) => {
-    let user = User.getAllUsers().filter(account => account.email === email)
+/**Used in login endpoint to verify the password for the username*/
+const verifyCredentials = (name, password) => {
+    client.query(`select password from Users where Users.username='${name}'`, (res, err) => {
+        if (err) {
+            console.log(err)
+            return -1
+        } else {
+            console.log(res)
 
-    if (user.length == 0) {
-        return -1;
-    }
+            const passwords = rows
+            if (passwords) {
+                if (passwords.length == 0 || passwords.length > 1) {
+                    return -1
+                }
 
-    if (user[0].password == password) {
-        return 1
-    } else {
-        return 0
-    }
+                if (passwords[0].password === password) {
+                    return 1
+                } else {
+                    return 0
+                }
+            } else {
+                return -1
+            }
+        }
+    })
 }
 
 const port = process.env.PORT || 3000
