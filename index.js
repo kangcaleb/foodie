@@ -153,16 +153,18 @@ app.get('/users-data', (req, res) => {
     res.json(User.getAllUserData())
 })
 
+/**get recipe data for a particular user */
 app.get('/user/:id/data', (req, res) => {
-    const id = req.params.id
+    const user = req.session.user
 
-    if (userData.has(id)) {
-        const data = userData.get(req.params.id, ()=>{})
-        res.setHeader("Access-Control-Allow-Origin", "*")
-        res.json(data)
-    } else {
-        res.send(404).send('bad user data request')
-    }
+    client.query(`select * from UserRecipe where username='${user}'`, (err, result) => {
+        if (err) {
+            res.status(500).send()
+        } else {
+            console.log(result.rows)
+            res.send(result.rows)
+        }
+    })
 })
 
 app.post('/user/:id/recipe', (req, res) => {

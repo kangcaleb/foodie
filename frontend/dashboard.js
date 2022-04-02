@@ -416,10 +416,10 @@ const myInfoButtonOnClick = function(recipes){
 
 async function getRecipes() {
   let user = await getCurrentUser()
-  await $.ajax(location.origin+"/user/"+user.id+"/data", {
+  await $.ajax(location.origin+"/user/"+user+"/data", {
     type: "GET",
     success: function(response) {
-      renderMyRecipes(response.recipes)
+      renderMyRecipes(response)
     }
   })
 }
