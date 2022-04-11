@@ -455,8 +455,23 @@ const renderNotesModal = async function(recipeid){
               </section>
           <footer class="modal-card-foot">
           <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>`
-          // need to update the cancel onclick method here^^
       $root.append(notesModal)
+
+      // add action to cancel button
+      $("#cancelButton").on('click', (event) => { // make async
+          // need to post notes to db
+          const notesToSave = $("p.pnotes").text()
+
+          postNotesRequest(recipeid, notesToSave).then((fulfilled) => {
+
+              //remove modal
+              $('.modal').removeClass('is-active')
+
+          }, (rejected) => {
+            alert("failed to save note")
+          })
+
+      })
 
     } else {
       let noteModals = document.getElementById(recipeid);
@@ -498,4 +513,30 @@ const notesRequest = async (recipeid) => {
   })
 
   return result.json()
+}
+
+const postNotesRequest = async (recipeid, notesToSave) => {
+  const data = {notes: `${notesToSave}`}
+
+  const result = await fetch(location.origin+'/notes/'+recipeid, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+  })
+
+  return result.json()
+}
+
+async function saveRecipe(recipe) {
+  let user = await getCurrentUser();
+  let response = await $.ajax(location.origin+"/user/"+user.id+"/recipe", {
+    type: "POST",
+    dataType: "JSON",
+    data: {
+        "recipe": recipe,
+    }}).catch((error) => {
+      alert(error)
+    })
 }

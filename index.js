@@ -162,7 +162,6 @@ app.get('/user/:id/data', (req, res) => {
         if (err) {
             res.status(500).send()
         } else {
-            console.log(result.rows)
             res.send(result.rows)
         }
     })
@@ -173,16 +172,32 @@ app.get('/notes/:recipeid', (req, res) => {
     const user = req.session.user
     const recipeid = req.params.recipeid
 
-    console.log("user", user)
-    console.log("recipe", recipeid)
-
     client.query(`select notes from UserRecipe where username='${user}' and recipeid='${recipeid}'`, (err, result) => {
         if (err) {
             res.status(500)
         } else {
-            console.log(result)
+            if (result.rowCount == 0) {
+                res.status(500); return
+            }
+            
             const notes = result.rows[0].notes
             res.json(notes)
+        }
+    })
+})
+
+/**save and post notes for a particular recipe */
+app.post('/notes/:recipeid', (req, res) => {
+    const user = req.session.user
+    const recipeid = req.params.recipeid
+    const notes = req.body.notes
+
+    client.query(`update UserRecipe set notes='${notes}' where username='${user}' and recipeid='${recipeid}'`, (err, result) => {
+        if (err) {
+            res.status(500)
+        } else {
+            console.log(result)
+            res.send(true)
         }
     })
 })
