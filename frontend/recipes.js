@@ -78,6 +78,7 @@ const requestRecipeSearch = async (type, search) => {
     return result.json();
 }
 
+/** Search Edadam DB for a specific recipe with given ID*/
 const requestRecipeSpecific = async (id) => {
     let baseUrl = 'https://api.edamam.com/api/recipes/v2/'
     baseUrl = baseUrl + id

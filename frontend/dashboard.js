@@ -368,7 +368,7 @@ const renderMyRecipes = function(recipes) {
                                 </div>
                               </div>
                             <div class="card-content">
-                                <div class="content">
+                                <div class="content" id="savedRecipe:${rec.recipeid}">
                                   <p>${recipeName}</p>
                                   <p>Calories: ${calories}</p>
                                   <p>Serving: ${serving}</p>
@@ -429,9 +429,9 @@ async function getRecipes() {
 }
 
 const notesButtonOnClick = function(){
-  $root.on('click', '.notesButton', function() {
-    let recipe = event.target.parentNode.children[0].textContent;
-    renderNotesModal(recipe);
+  $root.on('click', '.notesButton', function(event) {
+    let recipeid = event.target.parentNode.id.slice(12) // extract recipe id from id attribute of div containing button
+    renderNotesModal(recipeid);
   })
 }
 
