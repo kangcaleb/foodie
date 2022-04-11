@@ -154,7 +154,7 @@ app.get('/users-data', (req, res) => {
     res.json(User.getAllUserData())
 })
 
-/**get recipe data for a particular user */
+/**get saved recipes data for a particular user */
 app.get('/user/:id/data', (req, res) => {
     const user = req.session.user
 
@@ -164,6 +164,25 @@ app.get('/user/:id/data', (req, res) => {
         } else {
             console.log(result.rows)
             res.send(result.rows)
+        }
+    })
+})
+
+/**get notes for a particular recipe */
+app.get('/notes/:recipeid', (req, res) => {
+    const user = req.session.user
+    const recipeid = req.params.recipeid
+
+    console.log("user", user)
+    console.log("recipe", recipeid)
+
+    client.query(`select notes from UserRecipe where username='${user}' and recipeid='${recipeid}'`, (err, result) => {
+        if (err) {
+            res.status(500)
+        } else {
+            console.log(result)
+            const notes = result.rows[0].notes
+            res.json(notes)
         }
     })
 })

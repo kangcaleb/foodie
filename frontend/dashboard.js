@@ -419,8 +419,8 @@ const myInfoButtonOnClick = function(recipes){
 }
 
 async function getRecipes() {
-  let user = await getCurrentUser()
-  await $.ajax(location.origin+"/user/"+user+"/data", {
+  let userid = await getCurrentUser()
+  await $.ajax(location.origin+"/user/"+userid+"/data", {
     type: "GET",
     success: function(response) {
       renderMyRecipes(response)
@@ -435,30 +435,33 @@ const notesButtonOnClick = function(){
   })
 }
 
-const renderNotesModal = function(recipe){
+const renderNotesModal = async function(recipeid){
+    const notes = await notesRequest(recipeid)
 
-  if(document.getElementById(recipe) == null) {
-    let notesModal = document.createElement('div');
-    notesModal.setAttribute('class','modal is-active');
-    notesModal.setAttribute('id', recipe)
-    notesModal.innerHTML = `
-        <div class="modal-background"></div>
-              <div class="modal-card">
-                <header class="modal-card-head">
-                    <p class="modal-card-title">Ingredient and Source Info</p>
-                </header>
-            <section class="modal-card-body">
-                <form class="box">
-                  <p class="pnotes is-size-5" contenteditable="true"> Edit Me to Add Your Personal Recipe Notes! </p>                                             
-                </form>
-            </section>
-        <footer class="modal-card-foot">
-        <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>`
-    $root.append(notesModal)
-  } else {
-    let noteModals = document.getElementById(recipe);
-    noteModals.setAttribute('class', 'modal is-active')
-  }
+    if(document.getElementById(recipeid) == null) {
+      let notesModal = document.createElement('div');
+      notesModal.setAttribute('class','modal is-active');
+      notesModal.setAttribute('id', recipeid)
+      notesModal.innerHTML = `
+          <div class="modal-background"></div>
+                <div class="modal-card">
+                  <header class="modal-card-head">
+                      <p class="modal-card-title">Ingredient and Source Info</p>
+                  </header>
+              <section class="modal-card-body">
+                  <form class="box">
+                    <p class="pnotes is-size-5" contenteditable="true">${notes}</p>                                             
+                  </form>
+              </section>
+          <footer class="modal-card-foot">
+          <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>`
+          // need to update the cancel onclick method here^^
+      $root.append(notesModal)
+
+    } else {
+      let noteModals = document.getElementById(recipeid);
+      noteModals.setAttribute('class', 'modal is-active')
+    }
 }
 
 async function logOutOnClick() {
@@ -487,4 +490,12 @@ async function verificationRequest(email,password,newEmail,newPassword){
     }).catch(() => {
         $verificationMessage.html('<span class="has-text-danger">Invalid current email/password</span>');
     })
+}
+
+const notesRequest = async (recipeid) => {
+  const result = await fetch(location.origin+'/notes/'+recipeid, {
+      method: "GET"
+  })
+
+  return result.json()
 }
