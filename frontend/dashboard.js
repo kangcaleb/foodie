@@ -129,6 +129,8 @@ const renderSearchResults = (response) => {
         let recipeName = response.hits[i].recipe.label
         let healthLabel = response.hits[i].recipe.healthLabels
         let serving = response.hits[i].recipe.yield
+        let recipeuri = response.hits[i].recipe.uri
+        const recipeid = recipeuri.slice(-32) // need to splice this string to just get the recipe id within in
 
         const results = `<div class="container searchResult">
                             <div class="card">
@@ -141,7 +143,7 @@ const renderSearchResults = (response) => {
                                 </div>
                               </div>
                             <div class="card-content">
-                                <div class="content">
+                                <div class="content" id="recipe:${recipeid}">
                                   <p>${recipeName}</p>
                                   <p>Calories: ${calories}</p>
                                   <p>Serving: ${serving}</p>
@@ -170,24 +172,26 @@ const infoButtonOnClick = (response) => {
 }
 
 const saveButtonOnClick = (response) => {
-  $root.on('click', '.saveButton', function() {
+  $root.on('click', '.saveButton', function(event) { // extract recipe from id attribute
     event.target.parentNode.append(`Recipe Saved!`);
-    let recipe_name = event.target.parentNode.children[0].textContent;
-    let recipe = response.hits.find(x=> x.recipe.label == recipe_name).recipe;
-    saveRecipe(recipe);
+    const recipeid = event.target.parentNode.id.slice(-32)
+    saveRecipe(recipeid);
   })
 }
 
-async function saveRecipe(recipe) {
-  let user = await getCurrentUser();
-  let response = await $.ajax(location.origin+"/user/"+user.id+"/recipe", {
+async function saveRecipe(recipeid) {
+  let response = await $.ajax(location.origin+"/user/"+recipeid+"/recipe", { 
+    // need to use endpoint here to save recipe to user database
     type: "POST",
     dataType: "JSON",
     data: {
-        "recipe": recipe,
-    }}).catch((error) => {
+        "recipeid": recipeid,
+    }
+  }).catch((error) => {
       alert(error)
-    })
+  })
+
+  return response.json()
 }
 
 const myAccountOnClick = () => {
@@ -527,16 +531,4 @@ const postNotesRequest = async (recipeid, notesToSave) => {
   })
 
   return result.json()
-}
-
-async function saveRecipe(recipe) {
-  let user = await getCurrentUser();
-  let response = await $.ajax(location.origin+"/user/"+user.id+"/recipe", {
-    type: "POST",
-    dataType: "JSON",
-    data: {
-        "recipe": recipe,
-    }}).catch((error) => {
-      alert(error)
-    })
 }

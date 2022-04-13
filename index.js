@@ -167,7 +167,7 @@ app.get('/user/:id/data', (req, res) => {
     })
 })
 
-/**get notes for a particular recipe */
+/**get notes for a particular recipe for logged in user */
 app.get('/notes/:recipeid', (req, res) => {
     const user = req.session.user
     const recipeid = req.params.recipeid
@@ -194,7 +194,7 @@ app.post('/notes/:recipeid', (req, res) => {
 
     client.query(`update UserRecipe set notes='${notes}' where username='${user}' and recipeid='${recipeid}'`, (err, result) => {
         if (err) {
-            res.status(500)
+            res.status(500).send("error")
         } else {
             console.log(result)
             res.send(true)
@@ -202,34 +202,18 @@ app.post('/notes/:recipeid', (req, res) => {
     })
 })
 
-app.post('/user/:id/recipe', (req, res) => {
+// Save recipe to logged in user's saved recipe list
+app.post('/user/:recipeid/recipe', (req, res) => {
+    const user = req.session.user
+    const recipeid = req.body.recipeid
 
-    const id = req.params.id
-    const recipe = req.body.recipe
-
-    if (User.getUser(id) != null) {
-
-        const userdata = userData.get(id)
-
-        if (userdata == null) {
-            userData.set(id.toString(), {
-                id: parseInt(id),
-                recipes: [recipe]
-            })
-            userData.save()
-            res.json(userData.get(id))
-            return
+    client.query(`insert into UserRecipe values ('${user}', '${recipeid}', '')`, (err, result) => {
+        if (err) {
+            res.status(500).send("error")
+        } else {
+            res.send(result)
         }
-
-        // TODO Defensive Programing for valid recipe, if time
-
-        userdata.recipes.push(recipe)
-        userData.set(userdata.id.toString(), userdata)
-        res.setHeader("Access-Control-Allow-Origin", "*")
-        res.json(userdata)
-    } else {
-        res.status(404).send('no user')
-    }
+    })
 })
 
 app.delete('/user/:id/recipe', (req, res) => {
