@@ -178,7 +178,7 @@ const saveButtonOnClick = (response) => {
     saveRecipe(recipeid).then((success) => {
       event.target.parentNode.append(`Recipe Saved!`);
     }, (rejected) => {
-      alert("recipe not saved", rejected)
+      alert("recipe not saved:", rejected)
     });
   })
 }
@@ -196,9 +196,9 @@ async function saveRecipe(recipeid) {
   })
 
   if (response.dataType === Error.type) {
-    return response
-  } else {
     return Promise.reject(response.detail)
+  } else {
+    return response
   }
 }
 
@@ -396,30 +396,37 @@ const renderMyRecipes = function(recipes) {
         
         rootContent.append(results)
   })
-  deleteButtonOnClick(recipes)
+  deleteButtonOnClick()
   myInfoButtonOnClick(recipes)
   notesButtonOnClick(recipes)
 }
 
-const deleteButtonOnClick = function(recipes) {
-  $root.on('click', '.deleteButton', function() {
-    event.target.parentNode.append(`Recipe Deleted!`);
-    let recipe_name = event.target.parentNode.children[0].textContent;
-    let recipe = recipes.find(x => x.label == recipe_name);
-    deleteRecipe(recipe);
+const deleteButtonOnClick = function() {
+  $root.on('click', '.deleteButton', function(event) {
+    let recipeid = event.target.parentNode.id.slice(12)
+
+    deleteRecipe(recipeid).then(() => {
+      event.target.parentNode.append(`Recipe Deleted!`);
+    }, (rejected) => {
+      alert(rejected)
+    })
   })
 }
 
-async function deleteRecipe(recipe) {
-  let user = await getCurrentUser();
-  let response = await $.ajax(location.origin+"/user/"+user.id+"/recipe", {
+async function deleteRecipe(recipeid) {
+  let response = await $.ajax(location.origin+"/user/"+recipeid+"/recipe", {
     type: "DELETE",
     dataType: "JSON",
     data: {
-        "recipe": recipe,
+        "recipeid": recipeid,
     }}).catch((error) => {
       alert(error)
     })
+
+    if (response.command) {
+        return response
+    } else {
+        return Promise.reject(response.detail)    }
 }
 
 const myInfoButtonOnClick = function(recipes){

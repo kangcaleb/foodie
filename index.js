@@ -216,28 +216,17 @@ app.post('/user/:recipeid/recipe', (req, res) => {
     })
 })
 
-app.delete('/user/:id/recipe', (req, res) => {
-    const id = req.params.id
-    const recipe = req.body.recipe
+app.delete('/user/:recipeid/recipe', (req, res) => {
+    const user = req.session.user
+    const recipeid = req.body.recipeid
 
-    if (User.getUser(id) != null) {
-        const user = User.getUserData(id)
-
-        // TODO Defensive Programing for valid recipe, if time
-        const updated = user.recipes.filter(rec => rec.uri !== recipe.uri)
-
-        if (updated.length != user.recipes.length) {
-            user.recipes = updated
-            userData.set(user.id.toString(), user)
-
-            res.setHeader("Access-Control-Allow-Origin", "*")
-            res.json(user)
+    client.query(`delete from UserRecipe where username='${user}' and recipeid='${recipeid}'`, (err, result) => {
+        if (err) {
+            res.status(500).send(new Error(err.detail))
         } else {
-            res.status(404).send('bad recipe' + recipe.uri)
+            res.send(result)
         }
-    } else {
-        res.send(404).send('no user')
-    }
+    })
 })
 
 app.get('/', (req, res) => {
