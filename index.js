@@ -209,7 +209,7 @@ app.post('/user/:recipeid/recipe', (req, res) => {
 
     client.query(`insert into UserRecipe values ('${user}', '${recipeid}', '')`, (err, result) => {
         if (err) {
-            res.status(500).send("error")
+            res.status(500).send(new Error(err.detail))
         } else {
             res.send(result)
         }

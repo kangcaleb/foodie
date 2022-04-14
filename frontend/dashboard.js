@@ -173,9 +173,13 @@ const infoButtonOnClick = (response) => {
 
 const saveButtonOnClick = (response) => {
   $root.on('click', '.saveButton', function(event) { // extract recipe from id attribute
-    event.target.parentNode.append(`Recipe Saved!`);
+    
     const recipeid = event.target.parentNode.id.slice(-32)
-    saveRecipe(recipeid);
+    saveRecipe(recipeid).then((success) => {
+      event.target.parentNode.append(`Recipe Saved!`);
+    }, (rejected) => {
+      alert("recipe not saved", rejected)
+    });
   })
 }
 
@@ -191,7 +195,11 @@ async function saveRecipe(recipeid) {
       alert(error)
   })
 
-  return response.json()
+  if (response.dataType === Error.type) {
+    return response
+  } else {
+    return Promise.reject(response.detail)
+  }
 }
 
 const myAccountOnClick = () => {
