@@ -96,6 +96,9 @@ const requestRecipeSpecific = async (id) => {
     baseUrl += '&field=healthLabels'
     baseUrl += '&field=label'
     baseUrl += '&field=yield'
+    baseUrl += '&field=ingredientLines'
+    baseUrl += '&field=url'
+
 
     const url = baseUrl.replace('#', '%23')
 

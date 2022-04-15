@@ -164,10 +164,9 @@ const renderSearchResults = (response) => {
 }
 
 const infoButtonOnClick = (response) => {
-    $root.on('click','.infoButton',function () {
-        let recipe_name = event.target.parentNode.children[0].textContent;
-        let recipe = response.hits.find(x => x.recipe.label == recipe_name).recipe;
-        renderInformationModal(recipe)
+    $root.on('click','.infoButton',function (event) {
+        const recipeid = event.target.parentNode.id.slice(-32)
+        renderInformationModal(recipeid)
     })
 }
 
@@ -209,12 +208,11 @@ const myAccountOnClick = () => {
     })
 }
 
-const renderInformationModal = (recipe) => {
+const renderInformationModal = async (recipeid) => {
 
     /** find ingredients and nutrient info from response given a recipe name */
-    console.log(recipe)
+    const recipe = (await requestRecipeSpecific(recipeid)).recipe
     let ingredients = recipe.ingredientLines
-    console.log(ingredients[0])
     let url = recipe.url;
 
     let ingredList = ""
@@ -397,7 +395,7 @@ const renderMyRecipes = function(recipes) {
         rootContent.append(results)
   })
   deleteButtonOnClick()
-  myInfoButtonOnClick(recipes)
+  myInfoButtonOnClick()
   notesButtonOnClick(recipes)
 }
 
@@ -429,11 +427,10 @@ async function deleteRecipe(recipeid) {
         return Promise.reject(response.detail)    }
 }
 
-const myInfoButtonOnClick = function(recipes){
-  $root.on('click','.myinfoButton',function () {
-      let recipe_name = event.target.parentNode.children[0].textContent;
-      let recipe = recipes.find(x => x.label == recipe_name);
-      renderInformationModal(recipe)
+const myInfoButtonOnClick = function(){
+  $root.on('click','.myinfoButton',function (event) {
+      const recipeid = event.target.parentNode.id.slice(12)
+      renderInformationModal(recipeid)
   })
 }
 
