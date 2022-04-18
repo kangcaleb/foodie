@@ -74,7 +74,6 @@ app.post('/login', (req,res) => {
         if (err) {
             res.status(500).send('Error in getting user')
         } else {
-            console.log(result)
             const passwords = result.rows
 
             if (passwords) {
@@ -84,8 +83,6 @@ app.post('/login', (req,res) => {
                     res.status(401).send('Credentials Invalid'); return
                 }
 
-                console.log(passwords[0].password)
-                console.log(password)
                 if (passwords[0].password === password) {
                     req.session.user = name
                     res.json(name)
@@ -236,7 +233,6 @@ app.get('/', (req, res) => {
 
 app.put('/user/:userid', (req, res) => {
     const user = req.body.username
-    const newUsername = req.body.newUsername
     const password = req.body.password
     const newPassword = req.body.newPassword
 

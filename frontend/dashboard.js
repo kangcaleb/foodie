@@ -203,7 +203,6 @@ async function saveRecipe(recipeid) {
 
 const myAccountOnClick = () => {
     $root.on('click','.myAccount',function(){
-        //renderEditForm()
         renderEditForm()
     })
 }
@@ -253,7 +252,7 @@ const renderEditForm = () => {
             <section class="modal-card-body">
                 <form class="box">
                     <div class="field">
-                    <label class="label">Current Email</label>
+                    <label class="label">Current Username</label>
                        <p class="control has-icons-left has-icons-right">                                        
                           <input class="input" id="currentUserEmail" type="email" placeholder="Current Email">
                             <span class="icon is-small is-left">
@@ -271,14 +270,6 @@ const renderEditForm = () => {
                          </p>                       
                        </div>
                      <div class="field">
-                    <label class="label">New Email</label>
-                       <p class="control has-icons-left has-icons-right">                                        
-                          <input class="input" id="newUserEmail" type="email" placeholder="New Email?">
-                            <span class="icon is-small is-left">
-                               <i class="fas fa-at"></i>    
-                            </span>
-                       </p>                     
-                     </div>
                      <div class="field">
                        <label class="label">New Password</label>
                          <p class="control has-icons-left">
@@ -304,17 +295,15 @@ const renderEditForm = () => {
 
 const verifyOnClick = () => {
 
-    let email = ''
+    let username = ''
     let password = ''
-    let ne = ''
     let np = ''
 
     $root.on('click','.updateCredentialButton', function(){
-        email = $('input#currentUserEmail').val()
+      username = $('input#currentUserEmail').val()
         password = $('input#currentUserPassword').val()
-        ne = $('input#newUserEmail').val()
         np = $('input#newUserPassword').val()
-        verificationRequest(email,password,ne,np)
+        verificationRequest(username,password,np)
     })
 }
 
@@ -506,20 +495,19 @@ async function logOutOnClick() {
 }
 
 /*validate credentials to update password*/
-async function verificationRequest(username,password,newUsername,newPassword){
-    const $verificationMessage = $('#verificationMessage')
+async function verificationRequest(username,password,newPassword){
+    const verificationMessage = document.getElementById("verificationMessage")
     await $.ajax(location.origin+"/user/"+username,{
         type: "PUT",
         data: {
             "username": username,
             "password": password,
-            "newUsername": newUsername,
             "newPassword": newPassword
         }
     }).then(() => {
-        $verificationMessage.html('<span class="has-text-success">Credentials updated successfully</span>');
+        verificationMessage.innerHTML = '<span class="has-text-success">Credentials updated successfully</span>'
     }).catch(() => {
-        $verificationMessage.html('<span class="has-text-danger">Invalid current email/password</span>');
+        verificationMessage.innerHTML = '<span class="has-text-danger">Invalid current email/password</span>'
     })
 }
 
