@@ -36,6 +36,7 @@ client.connect();
 
 
 const User = require('./backend/user.js')
+const { password } = require('pg/lib/defaults')
 
 /*
 * Here are endpoints regarding login and user information.
@@ -233,32 +234,46 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/index.html'))
 })
 
-app.put('/user/:id', (req, res) => {
-    const id = req.params.id
-    const email = req.body.email
-    const newEmail = req.body.newEmail
+app.put('/user/:userid', (req, res) => {
+    const user = req.body.username
+    const newUsername = req.body.newUsername
     const password = req.body.password
     const newPassword = req.body.newPassword
 
-    if (User.getUser(id) != null) {
-
-        if (verifyCredentials(email, password) == 1) {
-            User.setUserData(id, {
-                id: id,
-                email: newEmail,
-                password: newPassword
-            })
-
-            res.json(User.getUser(id))
+    client.query(`select password from Users where Users.username='${user}'`, (err, result) => {
+        if (err) {
+            res.status(500).send(Promise.reject("error in getting new user"))
         } else {
-            res.status(404).send("invalid credentials")
+            const passwords = result.rows
+
+            if (passwords) {
+                if (passwords.length > 1) {
+                    res.status(500).send(Promise.reject("error in getting user, shouldn't be returning more that one password for that user")); return
+                } else if (passwords.length == 0) {
+                    res.status(401).send('Credentials Invalid'); return
+                }
+
+                if (passwords[0].password === password) {
+                    // credentials are valid, so can update the credentials
+                    changeCredentials(user, newPassword, res).then((result) => {
+                        res.send(result)
+                    }).catch((err) => {
+                        res.send(Promise.reject(err))
+                    })
+                } else {
+                    res.status(401).send('Credentials Invalid')
+                }
+            } else {
+                res.status(500).send(Promise.reject("Error in getting user"))
+            }
         }
-    } else {
-        res.status(404).send('no user found')
-    }
-
-
+    })
 })
+
+const changeCredentials = async function (user, newPassword) {
+    const response = await client.query(`update Users set password='${newPassword}' where username='${user}'`)
+    return response
+}
 
 const port = process.env.PORT || 3000
 app.listen(port, () => {

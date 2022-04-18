@@ -505,15 +505,15 @@ async function logOutOnClick() {
   })
 }
 
-async function verificationRequest(email,password,newEmail,newPassword){
-    const currentUser = await getCurrentUser()
+/*validate credentials to update password*/
+async function verificationRequest(username,password,newUsername,newPassword){
     const $verificationMessage = $('#verificationMessage')
-    await $.ajax(location.origin+"/user/"+currentUser.id,{
+    await $.ajax(location.origin+"/user/"+username,{
         type: "PUT",
         data: {
-            "email": email,
+            "username": username,
             "password": password,
-            "newEmail": newEmail,
+            "newUsername": newUsername,
             "newPassword": newPassword
         }
     }).then(() => {
