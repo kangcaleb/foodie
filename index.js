@@ -1,17 +1,13 @@
+/**
+ * 
+ * Here we set up express and configure it
+ */
 const express = require('express')
 const app = express()
-
-const bodyParser = require('body-parser')
-app.use(bodyParser.json())
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.static(__dirname));
-
-const path = require('path')
-
-const cors = require('cors')
-app.use(cors())
 
 const expressSession = require('express-session')
 app.use(expressSession({
@@ -22,7 +18,18 @@ app.use(expressSession({
     cookie: {secure: false}
 }))
 
-/** Here we set up the POSTGRES Client*/
+const bodyParser = require('body-parser')
+app.use(bodyParser.json())
+
+const cors = require('cors')
+app.use(cors())
+
+const path = require('path')
+
+/**
+ * 
+ * Here we set up the Postgres Client and backend
+ */
 const { Client } = require('pg');
 const client = new Client({
     
@@ -31,39 +38,12 @@ const client = new Client({
     rejectUnauthorized: false
   }
 });
-
 client.connect();
 
-
-const User = require('./backend/user.js')
-const { password } = require('pg/lib/defaults')
-
-/*
-* Here are endpoints regarding login and user information.
-* Right now they are all relative to the base url: http//localhost:3000
-*
-* */
-
-app.get('/home', (req, res) => {
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    res.json('This is a test to see that my express backend is up and running. This is the endpoint for the homepage')
-})
-
-app.get('/userids', (req, res) => {
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    res.json(User.getAllUserIds())
-})
-
-app.get('/users', (req, res) => {
-    let users = User.getAllUsers()
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    res.json(users)
-})
-
-/*This endpoint requires the user and password information to be in the request body
-* This information needs to be passed in as key values pairs with the keys being
-* email and password respectively. content type for request must be form-url-encoded
-* */
+/**
+ *
+ * Login the user when provided with the right credentials 
+ */
 app.post('/login', (req,res) => {
     let name = req.body.email;
     let password = req.body.password;
@@ -96,16 +76,21 @@ app.post('/login', (req,res) => {
     })
 })
 
-/*
-* log out the user
-* */
+/**
+ * 
+ * LOG OUT the user and remove it from the current
+ * session
+ */
 app.get('/logout', (req, res) => {
     delete req.session.user
     res.setHeader("Access-Control-Allow-Origin", "*")
     res.json(true)
 })
 
-// get the current user
+/**
+ * 
+ * Get the user for the current session
+ */
 app.get('/login', (req, res) => {
     const user = req.session.user
     res.json(user)
@@ -131,25 +116,6 @@ app.post('/user', (req, res) => {
             res.send(result)
         }
     })
-})
-
-/*
-* gets the user info given a user id passed in as a parameter
-* */
-app.get('/user/:id', (req, res) => {
-    let user = User.getUser(req.params.id)
-    if (user == null) {
-        res.send(404).send('bad user request')
-        return
-    }
-
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    res.send(user)
-})
-
-app.get('/users-data', (req, res) => {
-    res.setHeader("Access-Control-Allow-Origin", "*")
-    res.json(User.getAllUserData())
 })
 
 /**get saved recipes data for a particular user */
@@ -194,7 +160,6 @@ app.post('/notes/:recipeid', (req, res) => {
         if (err) {
             res.status(500).send("error")
         } else {
-            console.log(result)
             res.send(true)
         }
     })
@@ -250,7 +215,6 @@ app.put('/user/:userid', (req, res) => {
                 }
 
                 if (passwords[0].password === password) {
-                    // credentials are valid, so can update the credentials
                     changeCredentials(user, newPassword, res).then((result) => {
                         res.send(result)
                     }).catch((err) => {

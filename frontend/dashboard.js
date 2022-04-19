@@ -130,7 +130,7 @@ const renderSearchResults = (response) => {
         let healthLabel = response.hits[i].recipe.healthLabels
         let serving = response.hits[i].recipe.yield
         let recipeuri = response.hits[i].recipe.uri
-        const recipeid = recipeuri.slice(-32) // need to splice this string to just get the recipe id within in
+        const recipeid = recipeuri.slice(-32)
 
         const results = `<div class="container searchResult">
                             <div class="card">
@@ -171,7 +171,7 @@ const infoButtonOnClick = (response) => {
 }
 
 const saveButtonOnClick = (response) => {
-  $root.on('click', '.saveButton', function(event) { // extract recipe from id attribute
+  $root.on('click', '.saveButton', function(event) {
     
     const recipeid = event.target.parentNode.id.slice(-32)
     saveRecipe(recipeid).then((success) => {
@@ -183,8 +183,7 @@ const saveButtonOnClick = (response) => {
 }
 
 async function saveRecipe(recipeid) {
-  let response = await $.ajax(location.origin+"/user/"+recipeid+"/recipe", { 
-    // need to use endpoint here to save recipe to user database
+  let response = await $.ajax(location.origin+"/user/"+recipeid+"/recipe", {
     type: "POST",
     dataType: "JSON",
     data: {
@@ -208,8 +207,6 @@ const myAccountOnClick = () => {
 }
 
 const renderInformationModal = async (recipeid) => {
-
-    /** find ingredients and nutrient info from response given a recipe name */
     const recipe = (await requestRecipeSpecific(recipeid)).recipe
     let ingredients = recipe.ingredientLines
     let url = recipe.url;
@@ -218,7 +215,6 @@ const renderInformationModal = async (recipeid) => {
     ingredients.forEach(line => {
       ingredList += `<p>-` + line + `</p>`
     })
-
 
     let infoModal = document.createElement('div');
     infoModal.setAttribute('class','modal is-active');
@@ -323,7 +319,6 @@ const configNav = () => {
 
     const myRecipes = $('a#my-recipes')
     myRecipes.on('click', () => {
-        // TODO go to my recipes pages
         const rootContent = $('div#root-content')
         rootContent.empty()
         getRecipes();
@@ -359,8 +354,6 @@ const renderMyRecipes = function(recipes) {
   }
 
   recipes.forEach(async (rec) => {
-
-      /**get recipe info here from 3rd party edam api */
       const recipe = (await requestRecipeSpecific(rec.recipeid)).recipe
 
       let calories = Math.round(recipe.calories)
@@ -449,7 +442,7 @@ async function getRecipes() {
 
 const notesButtonOnClick = function(){
   $root.on('click', '.notesButton', function(event) {
-    let recipeid = event.target.parentNode.id.slice(12) // extract recipe id from id attribute of div containing button
+    let recipeid = event.target.parentNode.id.slice(12)
     renderNotesModal(recipeid);
   })
 }
@@ -476,16 +469,11 @@ const renderNotesModal = async function(recipeid){
           <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>`
       $root.append(notesModal)
 
-      // add action to cancel button
-      $("#cancelButton").on('click', (event) => { // make async
-          // need to post notes to db
+      $("#cancelButton").on('click', (event) => {
           const notesToSave = $("p.pnotes").text()
 
           postNotesRequest(recipeid, notesToSave).then((fulfilled) => {
-
-              //remove modal
               $('.modal').removeClass('is-active')
-
           }, (rejected) => {
             alert("failed to save note")
           })
