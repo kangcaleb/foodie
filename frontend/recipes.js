@@ -83,13 +83,12 @@ const requestRecipeSpecific = async (id) => {
     let baseUrl = 'https://api.edamam.com/api/recipes/v2/'
     baseUrl = baseUrl + id
 
-    baseUrl += '?' // start entering params
+    baseUrl += '?'
     baseUrl += 'type=public'
     
-    baseUrl = baseUrl + '&app_id=' + app_id
-    baseUrl = baseUrl + '&app_key=' + app_key
+    baseUrl = baseUrl + '&app_id=' + process.env.app_id
+    baseUrl = baseUrl + '&app_key=' + process.env.app_key
 
-    // select fields we want
     baseUrl += '&field=calories'
     baseUrl += '&field=dietLabels'
     baseUrl += '&field=image'
