@@ -129,6 +129,8 @@ const renderSearchResults = (response) => {
         let recipeName = response.hits[i].recipe.label
         let healthLabel = response.hits[i].recipe.healthLabels
         let serving = response.hits[i].recipe.yield
+        let recipeuri = response.hits[i].recipe.uri
+        const recipeid = recipeuri.slice(-32) // need to splice this string to just get the recipe id within in
 
         const results = `<div class="container searchResult">
                             <div class="card">
@@ -141,7 +143,7 @@ const renderSearchResults = (response) => {
                                 </div>
                               </div>
                             <div class="card-content">
-                                <div class="content">
+                                <div class="content" id="recipe:${recipeid}">
                                   <p>${recipeName}</p>
                                   <p>Calories: ${calories}</p>
                                   <p>Serving: ${serving}</p>
@@ -162,47 +164,54 @@ const renderSearchResults = (response) => {
 }
 
 const infoButtonOnClick = (response) => {
-    $root.on('click','.infoButton',function () {
-        let recipe_name = event.target.parentNode.children[0].textContent;
-        let recipe = response.hits.find(x => x.recipe.label == recipe_name).recipe;
-        renderInformationModal(recipe)
+    $root.on('click','.infoButton',function (event) {
+        const recipeid = event.target.parentNode.id.slice(-32)
+        renderInformationModal(recipeid)
     })
 }
 
 const saveButtonOnClick = (response) => {
-  $root.on('click', '.saveButton', function() {
-    event.target.parentNode.append(`Recipe Saved!`);
-    let recipe_name = event.target.parentNode.children[0].textContent;
-    let recipe = response.hits.find(x=> x.recipe.label == recipe_name).recipe;
-    saveRecipe(recipe);
+  $root.on('click', '.saveButton', function(event) { // extract recipe from id attribute
+    
+    const recipeid = event.target.parentNode.id.slice(-32)
+    saveRecipe(recipeid).then((success) => {
+      event.target.parentNode.append(`Recipe Saved!`);
+    }, (rejected) => {
+      alert("recipe not saved:", rejected)
+    });
   })
 }
 
-async function saveRecipe(recipe) {
-  let user = await getCurrentUser();
-  let response = await $.ajax(location.origin+"/user/"+user.id+"/recipe", {
+async function saveRecipe(recipeid) {
+  let response = await $.ajax(location.origin+"/user/"+recipeid+"/recipe", { 
+    // need to use endpoint here to save recipe to user database
     type: "POST",
     dataType: "JSON",
     data: {
-        "recipe": recipe,
-    }}).catch((error) => {
+        "recipeid": recipeid,
+    }
+  }).catch((error) => {
       alert(error)
-    })
+  })
+
+  if (response.dataType === Error.type) {
+    return Promise.reject(response.detail)
+  } else {
+    return response
+  }
 }
 
 const myAccountOnClick = () => {
     $root.on('click','.myAccount',function(){
-        //renderEditForm()
         renderEditForm()
     })
 }
 
-const renderInformationModal = (recipe) => {
+const renderInformationModal = async (recipeid) => {
 
     /** find ingredients and nutrient info from response given a recipe name */
-    console.log(recipe)
+    const recipe = (await requestRecipeSpecific(recipeid)).recipe
     let ingredients = recipe.ingredientLines
-    console.log(ingredients[0])
     let url = recipe.url;
 
     let ingredList = ""
@@ -243,7 +252,7 @@ const renderEditForm = () => {
             <section class="modal-card-body">
                 <form class="box">
                     <div class="field">
-                    <label class="label">Current Email</label>
+                    <label class="label">Current Username</label>
                        <p class="control has-icons-left has-icons-right">                                        
                           <input class="input" id="currentUserEmail" type="email" placeholder="Current Email">
                             <span class="icon is-small is-left">
@@ -261,14 +270,6 @@ const renderEditForm = () => {
                          </p>                       
                        </div>
                      <div class="field">
-                    <label class="label">New Email</label>
-                       <p class="control has-icons-left has-icons-right">                                        
-                          <input class="input" id="newUserEmail" type="email" placeholder="New Email?">
-                            <span class="icon is-small is-left">
-                               <i class="fas fa-at"></i>    
-                            </span>
-                       </p>                     
-                     </div>
                      <div class="field">
                        <label class="label">New Password</label>
                          <p class="control has-icons-left">
@@ -294,17 +295,15 @@ const renderEditForm = () => {
 
 const verifyOnClick = () => {
 
-    let email = ''
+    let username = ''
     let password = ''
-    let ne = ''
     let np = ''
 
     $root.on('click','.updateCredentialButton', function(){
-        email = $('input#currentUserEmail').val()
+      username = $('input#currentUserEmail').val()
         password = $('input#currentUserPassword').val()
-        ne = $('input#newUserEmail').val()
         np = $('input#newUserPassword').val()
-        verificationRequest(email,password,ne,np)
+        verificationRequest(username,password,np)
     })
 }
 
@@ -317,11 +316,9 @@ const configNav = () => {
 
     const about = $('a#about')
     about.on('click', () => {
-        if (Math.random()<=0.33) {
-            window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstleyVEVO'
-        } else {
-            alert('about')
-        }
+      const rootContent = $('#root-content')
+      rootContent.empty()
+      renderAbout()
     })
 
     const myRecipes = $('a#my-recipes')
@@ -331,6 +328,22 @@ const configNav = () => {
         rootContent.empty()
         getRecipes();
     })
+}
+
+const renderAbout = () => {
+  const rootContent = $('#root-content')
+  rootContent.append(`<br><div class="columns is-centered"><h1 class="title is-2">About</h1></div>`)
+  rootContent.append(`<div class="container searchResult">
+                        <br><br>
+                        <div class="card">
+                        <p class="has-text-centered" style="padding: 20px"> Foodie was developed by George Chen, Chun Yeung, and
+                          Caleb Kang, graduates from The University of North Carolina, Chapel Hill. Designed to help people keep
+                          track of the seemingly endless number of recipes they want to try to cook, keep them all in one place. We
+                          that it can be useful to that end. Shout out to KMP and for inspiring us to come up with this idea and for
+                          motivating us to actually create it. Github for this project is <span><a href="https://github.com/kangcaleb/foodie">here</a></span>.
+                          Enjoy!</p>
+                      </div>
+                        </div>`)
 }
 
 const renderMyRecipes = function(recipes) {
@@ -345,13 +358,17 @@ const renderMyRecipes = function(recipes) {
     )
   }
 
-  recipes.forEach(rec => {
-      let calories = Math.round(rec.calories)
-      let dietType = rec.dietLabels
-      let recipeImage = rec.image
-      let recipeName = rec.label
-      let healthLabel = rec.healthLabels
-      let serving = rec.yield
+  recipes.forEach(async (rec) => {
+
+      /**get recipe info here from 3rd party edam api */
+      const recipe = (await requestRecipeSpecific(rec.recipeid)).recipe
+
+      let calories = Math.round(recipe.calories)
+      let dietType = recipe.dietLabels
+      let recipeImage = recipe.image
+      let recipeName = recipe.label
+      let healthLabel = recipe.healthLabels
+      let serving = recipe.yield
 
         const results = `<div class="container searchResult">
                             <div class="card">
@@ -364,7 +381,7 @@ const renderMyRecipes = function(recipes) {
                                 </div>
                               </div>
                             <div class="card-content">
-                                <div class="content">
+                                <div class="content" id="savedRecipe:${rec.recipeid}">
                                   <p>${recipeName}</p>
                                   <p>Calories: ${calories}</p>
                                   <p>Serving: ${serving}</p>
@@ -380,43 +397,49 @@ const renderMyRecipes = function(recipes) {
         
         rootContent.append(results)
   })
-  deleteButtonOnClick(recipes)
-  myInfoButtonOnClick(recipes)
+  deleteButtonOnClick()
+  myInfoButtonOnClick()
   notesButtonOnClick(recipes)
 }
 
-const deleteButtonOnClick = function(recipes) {
-  $root.on('click', '.deleteButton', function() {
-    event.target.parentNode.append(`Recipe Deleted!`);
-    let recipe_name = event.target.parentNode.children[0].textContent;
-    let recipe = recipes.find(x => x.label == recipe_name);
-    deleteRecipe(recipe);
+const deleteButtonOnClick = function() {
+  $root.on('click', '.deleteButton', function(event) {
+    let recipeid = event.target.parentNode.id.slice(12)
+
+    deleteRecipe(recipeid).then(() => {
+      event.target.parentNode.append(`Recipe Deleted!`);
+    }, (rejected) => {
+      alert(rejected)
+    })
   })
 }
 
-async function deleteRecipe(recipe) {
-  let user = await getCurrentUser();
-  let response = await $.ajax(location.origin+"/user/"+user.id+"/recipe", {
+async function deleteRecipe(recipeid) {
+  let response = await $.ajax(location.origin+"/user/"+recipeid+"/recipe", {
     type: "DELETE",
     dataType: "JSON",
     data: {
-        "recipe": recipe,
+        "recipeid": recipeid,
     }}).catch((error) => {
       alert(error)
     })
+
+    if (response.command) {
+        return response
+    } else {
+        return Promise.reject(response.detail)    }
 }
 
-const myInfoButtonOnClick = function(recipes){
-  $root.on('click','.myinfoButton',function () {
-      let recipe_name = event.target.parentNode.children[0].textContent;
-      let recipe = recipes.find(x => x.label == recipe_name);
-      renderInformationModal(recipe)
+const myInfoButtonOnClick = function(){
+  $root.on('click','.myinfoButton',function (event) {
+      const recipeid = event.target.parentNode.id.slice(12)
+      renderInformationModal(recipeid)
   })
 }
 
 async function getRecipes() {
-  let user = await getCurrentUser()
-  await $.ajax(location.origin+"/user/"+user+"/data", {
+  let userid = await getCurrentUser()
+  await $.ajax(location.origin+"/user/"+userid+"/data", {
     type: "GET",
     success: function(response) {
       renderMyRecipes(response)
@@ -425,36 +448,54 @@ async function getRecipes() {
 }
 
 const notesButtonOnClick = function(){
-  $root.on('click', '.notesButton', function() {
-    let recipe = event.target.parentNode.children[0].textContent;
-    renderNotesModal(recipe);
+  $root.on('click', '.notesButton', function(event) {
+    let recipeid = event.target.parentNode.id.slice(12) // extract recipe id from id attribute of div containing button
+    renderNotesModal(recipeid);
   })
 }
 
-const renderNotesModal = function(recipe){
+const renderNotesModal = async function(recipeid){
+    const notes = await notesRequest(recipeid)
 
-  if(document.getElementById(recipe) == null) {
-    let notesModal = document.createElement('div');
-    notesModal.setAttribute('class','modal is-active');
-    notesModal.setAttribute('id', recipe)
-    notesModal.innerHTML = `
-        <div class="modal-background"></div>
-              <div class="modal-card">
-                <header class="modal-card-head">
-                    <p class="modal-card-title">Ingredient and Source Info</p>
-                </header>
-            <section class="modal-card-body">
-                <form class="box">
-                  <p class="pnotes is-size-5" contenteditable="true"> Edit Me to Add Your Personal Recipe Notes! </p>                                             
-                </form>
-            </section>
-        <footer class="modal-card-foot">
-        <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>`
-    $root.append(notesModal)
-  } else {
-    let noteModals = document.getElementById(recipe);
-    noteModals.setAttribute('class', 'modal is-active')
-  }
+    if(document.getElementById(recipeid) == null) {
+      let notesModal = document.createElement('div');
+      notesModal.setAttribute('class','modal is-active');
+      notesModal.setAttribute('id', recipeid)
+      notesModal.innerHTML = `
+          <div class="modal-background"></div>
+                <div class="modal-card">
+                  <header class="modal-card-head">
+                      <p class="modal-card-title">Ingredient and Source Info</p>
+                  </header>
+              <section class="modal-card-body">
+                  <form class="box">
+                    <p class="pnotes is-size-5" contenteditable="true">${notes}</p>                                             
+                  </form>
+              </section>
+          <footer class="modal-card-foot">
+          <button class="modal-close is-large" aria-label="close" id="cancelButton" onclick="$('.modal').removeClass('is-active');"></button>`
+      $root.append(notesModal)
+
+      // add action to cancel button
+      $("#cancelButton").on('click', (event) => { // make async
+          // need to post notes to db
+          const notesToSave = $("p.pnotes").text()
+
+          postNotesRequest(recipeid, notesToSave).then((fulfilled) => {
+
+              //remove modal
+              $('.modal').removeClass('is-active')
+
+          }, (rejected) => {
+            alert("failed to save note")
+          })
+
+      })
+
+    } else {
+      let noteModals = document.getElementById(recipeid);
+      noteModals.setAttribute('class', 'modal is-active')
+    }
 }
 
 async function logOutOnClick() {
@@ -467,20 +508,41 @@ async function logOutOnClick() {
   })
 }
 
-async function verificationRequest(email,password,newEmail,newPassword){
-    const currentUser = await getCurrentUser()
-    const $verificationMessage = $('#verificationMessage')
-    await $.ajax(location.origin+"/user/"+currentUser.id,{
+/*validate credentials to update password*/
+async function verificationRequest(username,password,newPassword){
+    const verificationMessage = document.getElementById("verificationMessage")
+    await $.ajax(location.origin+"/user/"+username,{
         type: "PUT",
         data: {
-            "email": email,
+            "username": username,
             "password": password,
-            "newEmail": newEmail,
             "newPassword": newPassword
         }
     }).then(() => {
-        $verificationMessage.html('<span class="has-text-success">Credentials updated successfully</span>');
+        verificationMessage.innerHTML = '<span class="has-text-success">Credentials updated successfully</span>'
     }).catch(() => {
-        $verificationMessage.html('<span class="has-text-danger">Invalid current email/password</span>');
+        verificationMessage.innerHTML = '<span class="has-text-danger">Invalid current email/password</span>'
     })
+}
+
+const notesRequest = async (recipeid) => {
+  const result = await fetch(location.origin+'/notes/'+recipeid, {
+      method: "GET"
+  })
+
+  return result.json()
+}
+
+const postNotesRequest = async (recipeid, notesToSave) => {
+  const data = {notes: `${notesToSave}`}
+
+  const result = await fetch(location.origin+'/notes/'+recipeid, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data)
+  })
+
+  return result.json()
 }

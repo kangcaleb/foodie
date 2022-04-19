@@ -1,9 +1,9 @@
 const createRecipeList = async () => {
     const list = $('<div id="recipes-list" class="container"></div>')
 
-    const userObj = await getCurrentUser()
+    const user = await getCurrentUser()
 
-    const result = await requestRecipes(userObj.id)
+    const result = await requestRecipes(user)
     const recipes = result.recipes
 
     for (let i=0; i<recipes.length; i++) {
@@ -65,6 +65,40 @@ const requestRecipeSearch = async (type, search) => {
     baseUrl = baseUrl + '&app_id=' + app_id
     baseUrl = baseUrl + '&app_key=' + app_key
     baseUrl = baseUrl + '&from=0&to=30'
+
+    const url = baseUrl.replace('#', '%23')
+
+    const result = await fetch(url, {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+
+    return result.json();
+}
+
+/** Search Edadam DB for a specific recipe with given ID*/
+const requestRecipeSpecific = async (id) => {
+    let baseUrl = 'https://api.edamam.com/api/recipes/v2/'
+    baseUrl = baseUrl + id
+
+    baseUrl += '?' // start entering params
+    baseUrl += 'type=public'
+    
+    baseUrl = baseUrl + '&app_id=' + app_id
+    baseUrl = baseUrl + '&app_key=' + app_key
+
+    // select fields we want
+    baseUrl += '&field=calories'
+    baseUrl += '&field=dietLabels'
+    baseUrl += '&field=image'
+    baseUrl += '&field=healthLabels'
+    baseUrl += '&field=label'
+    baseUrl += '&field=yield'
+    baseUrl += '&field=ingredientLines'
+    baseUrl += '&field=url'
+
 
     const url = baseUrl.replace('#', '%23')
 

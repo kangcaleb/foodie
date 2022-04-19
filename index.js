@@ -36,6 +36,7 @@ client.connect();
 
 
 const User = require('./backend/user.js')
+const { password } = require('pg/lib/defaults')
 
 /*
 * Here are endpoints regarding login and user information.
@@ -73,7 +74,6 @@ app.post('/login', (req,res) => {
         if (err) {
             res.status(500).send('Error in getting user')
         } else {
-            console.log(result)
             const passwords = result.rows
 
             if (passwords) {
@@ -83,8 +83,6 @@ app.post('/login', (req,res) => {
                     res.status(401).send('Credentials Invalid'); return
                 }
 
-                console.log(passwords[0].password)
-                console.log(password)
                 if (passwords[0].password === password) {
                     req.session.user = name
                     res.json(name)
@@ -107,6 +105,7 @@ app.get('/logout', (req, res) => {
     res.json(true)
 })
 
+// get the current user
 app.get('/login', (req, res) => {
     const user = req.session.user
     res.json(user)
@@ -153,7 +152,7 @@ app.get('/users-data', (req, res) => {
     res.json(User.getAllUserData())
 })
 
-/**get recipe data for a particular user */
+/**get saved recipes data for a particular user */
 app.get('/user/:id/data', (req, res) => {
     const user = req.session.user
 
@@ -161,96 +160,116 @@ app.get('/user/:id/data', (req, res) => {
         if (err) {
             res.status(500).send()
         } else {
-            console.log(result.rows)
             res.send(result.rows)
         }
     })
 })
 
-app.post('/user/:id/recipe', (req, res) => {
+/**get notes for a particular recipe for logged in user */
+app.get('/notes/:recipeid', (req, res) => {
+    const user = req.session.user
+    const recipeid = req.params.recipeid
 
-    const id = req.params.id
-    const recipe = req.body.recipe
-
-    if (User.getUser(id) != null) {
-
-        const userdata = userData.get(id)
-
-        if (userdata == null) {
-            userData.set(id.toString(), {
-                id: parseInt(id),
-                recipes: [recipe]
-            })
-            userData.save()
-            res.json(userData.get(id))
-            return
+    client.query(`select notes from UserRecipe where username='${user}' and recipeid='${recipeid}'`, (err, result) => {
+        if (err) {
+            res.status(500)
+        } else {
+            if (result.rowCount == 0) {
+                res.status(500); return
+            }
+            
+            const notes = result.rows[0].notes
+            res.json(notes)
         }
-
-        // TODO Defensive Programing for valid recipe, if time
-
-        userdata.recipes.push(recipe)
-        userData.set(userdata.id.toString(), userdata)
-        res.setHeader("Access-Control-Allow-Origin", "*")
-        res.json(userdata)
-    } else {
-        res.status(404).send('no user')
-    }
+    })
 })
 
-app.delete('/user/:id/recipe', (req, res) => {
-    const id = req.params.id
-    const recipe = req.body.recipe
+/**save and post notes for a particular recipe */
+app.post('/notes/:recipeid', (req, res) => {
+    const user = req.session.user
+    const recipeid = req.params.recipeid
+    const notes = req.body.notes
 
-    if (User.getUser(id) != null) {
-        const user = User.getUserData(id)
-
-        // TODO Defensive Programing for valid recipe, if time
-        const updated = user.recipes.filter(rec => rec.uri !== recipe.uri)
-
-        if (updated.length != user.recipes.length) {
-            user.recipes = updated
-            userData.set(user.id.toString(), user)
-
-            res.setHeader("Access-Control-Allow-Origin", "*")
-            res.json(user)
+    client.query(`update UserRecipe set notes='${notes}' where username='${user}' and recipeid='${recipeid}'`, (err, result) => {
+        if (err) {
+            res.status(500).send("error")
         } else {
-            res.status(404).send('bad recipe' + recipe.uri)
+            console.log(result)
+            res.send(true)
         }
-    } else {
-        res.send(404).send('no user')
-    }
+    })
+})
+
+// Save recipe to logged in user's saved recipe list
+app.post('/user/:recipeid/recipe', (req, res) => {
+    const user = req.session.user
+    const recipeid = req.body.recipeid
+
+    client.query(`insert into UserRecipe values ('${user}', '${recipeid}', '')`, (err, result) => {
+        if (err) {
+            res.status(500).send(new Error(err.detail))
+        } else {
+            res.send(result)
+        }
+    })
+})
+
+app.delete('/user/:recipeid/recipe', (req, res) => {
+    const user = req.session.user
+    const recipeid = req.body.recipeid
+
+    client.query(`delete from UserRecipe where username='${user}' and recipeid='${recipeid}'`, (err, result) => {
+        if (err) {
+            res.status(500).send(new Error(err.detail))
+        } else {
+            res.send(result)
+        }
+    })
 })
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/index.html'))
 })
 
-app.put('/user/:id', (req, res) => {
-    const id = req.params.id
-    const email = req.body.email
-    const newEmail = req.body.newEmail
+app.put('/user/:userid', (req, res) => {
+    const user = req.body.username
     const password = req.body.password
     const newPassword = req.body.newPassword
 
-    if (User.getUser(id) != null) {
-
-        if (verifyCredentials(email, password) == 1) {
-            User.setUserData(id, {
-                id: id,
-                email: newEmail,
-                password: newPassword
-            })
-
-            res.json(User.getUser(id))
+    client.query(`select password from Users where Users.username='${user}'`, (err, result) => {
+        if (err) {
+            res.status(500).send(Promise.reject("error in getting new user"))
         } else {
-            res.status(404).send("invalid credentials")
+            const passwords = result.rows
+
+            if (passwords) {
+                if (passwords.length > 1) {
+                    res.status(500).send(Promise.reject("error in getting user, shouldn't be returning more that one password for that user")); return
+                } else if (passwords.length == 0) {
+                    res.status(401).send('Credentials Invalid'); return
+                }
+
+                if (passwords[0].password === password) {
+                    // credentials are valid, so can update the credentials
+                    changeCredentials(user, newPassword, res).then((result) => {
+                        res.send(result)
+                    }).catch((err) => {
+                        res.send(Promise.reject(err))
+                    })
+                } else {
+                    res.status(401).send('Credentials Invalid')
+                }
+            } else {
+                res.status(500).send(Promise.reject("Error in getting user"))
+            }
         }
-    } else {
-        res.status(404).send('no user found')
-    }
-
-
+    })
 })
+
+const changeCredentials = async function (user, newPassword) {
+    const response = await client.query(`update Users set password='${newPassword}' where username='${user}'`)
+    return response
+}
 
 const port = process.env.PORT || 3000
 app.listen(port, () => {
