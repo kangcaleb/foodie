@@ -160,7 +160,6 @@ app.post('/notes/:recipeid', (req, res) => {
         if (err) {
             res.status(500).send("error")
         } else {
-            console.log(result)
             res.send(true)
         }
     })
@@ -216,7 +215,6 @@ app.put('/user/:userid', (req, res) => {
                 }
 
                 if (passwords[0].password === password) {
-                    // credentials are valid, so can update the credentials
                     changeCredentials(user, newPassword, res).then((result) => {
                         res.send(result)
                     }).catch((err) => {

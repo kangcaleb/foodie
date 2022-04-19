@@ -13,7 +13,6 @@ const renderLogo = function () {
                     </figure>`)
 }
 const renderLoginForm = function (){
-    //const $root = $('#root');
 
     $root.append(`<div class="hero">
                     <div class="hero-body">                   
@@ -121,7 +120,6 @@ const renderSignUpModal = function() {
 }
 
 const loginOnClick = function () {
-    //const $root = $('#root');
 
     let userEmail = ''
     let userPassword = ''
@@ -133,7 +131,6 @@ const loginOnClick = function () {
 }
 const signUpOnClick = function() {
     $root.on('click','.signUpButton',function () {
-        //alert('hello')
         renderSignUpModal()
     })
 }
