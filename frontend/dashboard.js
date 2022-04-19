@@ -316,11 +316,9 @@ const configNav = () => {
 
     const about = $('a#about')
     about.on('click', () => {
-        if (Math.random()<=0.33) {
-            window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ&ab_channel=RickAstleyVEVO'
-        } else {
-            alert('about')
-        }
+      const rootContent = $('#root-content')
+      rootContent.empty()
+      renderAbout()
     })
 
     const myRecipes = $('a#my-recipes')
@@ -330,6 +328,22 @@ const configNav = () => {
         rootContent.empty()
         getRecipes();
     })
+}
+
+const renderAbout = () => {
+  const rootContent = $('#root-content')
+  rootContent.append(`<br><div class="columns is-centered"><h1 class="title is-2">About</h1></div>`)
+  rootContent.append(`<div class="container searchResult">
+                        <br><br>
+                        <div class="card">
+                        <p class="has-text-centered" style="padding: 20px"> Foodie was developed by George Chen, Chun Yeung, and
+                          Caleb Kang, graduates from The University of North Carolina, Chapel Hill. Designed to help people keep
+                          track of the seemingly endless number of recipes they want to try to cook, keep them all in one place. We
+                          that it can be useful to that end. Shout out to KMP and for inspiring us to come up with this idea and for
+                          motivating us to actually create it. Github for this project is <span><a href="https://github.com/kangcaleb/foodie">here</a></span>.
+                          Enjoy!</p>
+                      </div>
+                        </div>`)
 }
 
 const renderMyRecipes = function(recipes) {
