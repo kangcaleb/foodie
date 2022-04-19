@@ -62,8 +62,8 @@ const requestRecipeSearch = async (type, search) => {
     let baseUrl = 'https://api.edamam.com/search?'
     baseUrl = baseUrl + (type + '=' + search)
 
-    baseUrl = baseUrl + '&app_id=' + app_id
-    baseUrl = baseUrl + '&app_key=' + app_key
+    baseUrl = baseUrl + '&app_id=' + process.env.app_id
+    baseUrl = baseUrl + '&app_key=' + process.env.app_key
     baseUrl = baseUrl + '&from=0&to=30'
 
     const url = baseUrl.replace('#', '%23')
