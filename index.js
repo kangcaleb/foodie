@@ -230,6 +230,13 @@ app.put('/user/:userid', (req, res) => {
     })
 })
 
+app.get('/credentials', (req, res) => {
+    const app_id = process.env.app_id
+    const app_key = process.env.app_key
+
+    res.send({'app_id': app_id, 'app_key': app_key})
+})
+
 const changeCredentials = async function (user, newPassword) {
     const response = await client.query(`update Users set password='${newPassword}' where username='${user}'`)
     return response
