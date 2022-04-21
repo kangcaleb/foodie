@@ -62,8 +62,10 @@ const requestRecipeSearch = async (type, search) => {
     let baseUrl = 'https://api.edamam.com/search?'
     baseUrl = baseUrl + (type + '=' + search)
 
-    baseUrl = baseUrl + '&app_id=' + process.env.app_id
-    baseUrl = baseUrl + '&app_key=' + process.env.app_key
+    const keys = await getKeys()
+    
+    baseUrl = baseUrl + '&app_id=' + keys.app_id
+    baseUrl = baseUrl + '&app_key=' + keys.app_key
     baseUrl = baseUrl + '&from=0&to=30'
 
     const url = baseUrl.replace('#', '%23')
@@ -85,9 +87,11 @@ const requestRecipeSpecific = async (id) => {
 
     baseUrl += '?'
     baseUrl += 'type=public'
+
+    const keys = await getKeys()
     
-    baseUrl = baseUrl + '&app_id=' + process.env.app_id
-    baseUrl = baseUrl + '&app_key=' + process.env.app_key
+    baseUrl = baseUrl + '&app_id=' + keys.app_id
+    baseUrl = baseUrl + '&app_key=' + keys.app_key
 
     baseUrl += '&field=calories'
     baseUrl += '&field=dietLabels'
@@ -109,4 +113,15 @@ const requestRecipeSpecific = async (id) => {
     })
 
     return result.json();
+}
+
+const getKeys = async () => {
+    const result = await fetch(location.origin+'/credentials', {
+        method: "GET",
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+
+    return result.json()
 }
